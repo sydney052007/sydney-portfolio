@@ -1,13 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --muted: #6b7280;
-  --border: #e5e7eb;
+  --background: #faf7f2;
+  --foreground: #1c1a17;
+  --muted: #7a7367;
+  --border: #e6ded2;
+  --accent: #2e4a66;
+  --accent-soft: #e9eff4;
+  --accent-strong: #1c3040;
   --font-system:
     -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC",
     "Noto Sans TC", "Microsoft JhengHei", Roboto, Helvetica, Arial, sans-serif;
+  --font-editorial:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Songti TC",
+    "PMingLiU", Georgia, "Noto Serif TC", serif;
 }
 
 @theme inline {
@@ -15,11 +21,30 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-strong: var(--accent-strong);
   --font-sans: var(--font-system);
+  --font-serif: var(--font-editorial);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-system);
+}
+
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition {
+  animation: page-fade-in 400ms ease-out;
 }

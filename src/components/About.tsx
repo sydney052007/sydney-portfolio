@@ -2,27 +2,34 @@ import { profile } from "@/data/profile";
 
 export default function About() {
   return (
-    <section id="about" className="scroll-mt-20 py-20">
-      <p className="text-sm text-muted">{profile.affiliation}</p>
-      <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-        {profile.displayName}
-      </h1>
-
-      <p className="mt-4 inline-block rounded-full border border-border px-4 py-1.5 text-sm text-muted">
-        {profile.status}
+    <section className="py-20">
+      <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
+        {profile.affiliation}
       </p>
 
-      <div className="mt-8 space-y-4 text-base leading-relaxed text-foreground/90">
-        {profile.bio.map((paragraph) => (
-          <p key={paragraph}>{paragraph}</p>
-        ))}
+      <div className="mt-3 flex flex-wrap items-end gap-4">
+        <h1 className="font-serif text-5xl font-semibold leading-none tracking-tight sm:text-6xl">
+          {profile.displayName}
+        </h1>
+        <span className="mb-1.5 rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent">
+          {profile.status.badge}
+        </span>
+      </div>
+      <p className="mt-2 text-sm text-muted">{profile.status.detail}</p>
+
+      <div className="mt-10 max-w-2xl border-l-2 border-accent/40 pl-6">
+        <div className="space-y-4 text-base leading-8 text-foreground/90">
+          {profile.bio.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
       </div>
 
-      <div className="mt-8 flex flex-wrap gap-2">
+      <div className="mt-10 flex flex-wrap gap-2">
         {profile.skills.map((skill) => (
           <span
             key={skill}
-            className="rounded-full bg-foreground/5 px-3 py-1 text-sm text-foreground/80"
+            className="rounded-full bg-accent-soft px-3 py-1 text-sm font-medium text-accent"
           >
             #{skill}
           </span>
@@ -32,7 +39,7 @@ export default function About() {
       <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
         <a
           href={`mailto:${profile.contact.email}`}
-          className="text-foreground underline underline-offset-4 hover:text-muted"
+          className="font-medium text-accent underline underline-offset-4 hover:text-accent-strong"
         >
           {profile.contact.email}
         </a>
@@ -40,7 +47,7 @@ export default function About() {
           href={profile.contact.github}
           target="_blank"
           rel="noreferrer"
-          className="text-foreground underline underline-offset-4 hover:text-muted"
+          className="font-medium text-accent underline underline-offset-4 hover:text-accent-strong"
         >
           GitHub
         </a>

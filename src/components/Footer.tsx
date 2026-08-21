@@ -5,14 +5,14 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-border py-10">
-      <div className="mx-auto flex max-w-3xl flex-col gap-3 px-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+      <div className="mx-auto flex max-w-5xl flex-col gap-3 px-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
         <p>
           © {year} {profile.displayName}
         </p>
         <div className="flex gap-5">
           <a
             href={`mailto:${profile.contact.email}`}
-            className="hover:text-foreground"
+            className="hover:text-accent"
           >
             {profile.contact.email}
           </a>
@@ -20,7 +20,7 @@ export default function Footer() {
             href={profile.contact.github}
             target="_blank"
             rel="noreferrer"
-            className="hover:text-foreground"
+            className="hover:text-accent"
           >
             GitHub
           </a>
