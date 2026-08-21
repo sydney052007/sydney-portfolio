@@ -4,7 +4,8 @@ export type ExperienceLink = {
 };
 
 export type ExperienceEmbed =
-  | { kind: "p5"; url: string }
+  // nativeWidth/Height = the sketch's actual createCanvas() size; the p5 editor's "full" view doesn't scale to fit, so we render at native size and scale down visually to displayWidth
+  | { kind: "p5"; url: string; nativeWidth: number; nativeHeight: number; displayWidth?: number }
   | { kind: "youtube"; videoId: string };
 
 export type Experience = {
@@ -60,6 +61,13 @@ export const experiences: Experience[] = [
         url: "https://editor.p5js.org/11130130/full/x8a54f3s_",
       },
     ],
-    embeds: [{ kind: "p5", url: "https://editor.p5js.org/11130130/full/x8a54f3s_" }],
+    embeds: [
+      {
+        kind: "p5",
+        url: "https://editor.p5js.org/11130130/full/x8a54f3s_",
+        nativeWidth: 500,
+        nativeHeight: 1000,
+      },
+    ],
   },
 ];
