@@ -44,7 +44,7 @@
 2. **視覺方向改成 editorial／藝廊質感**：暖米白背景、標題用 serif／內文用 sans 的字體對比、強調色用在時間軸縱線、bio 裝飾線、專案編號等版面元素上，不只是標籤底色。
 3. **作品集不對稱網格 + live 即時預覽**：`Project` 型別新增 `livePreview?: boolean`（是否已實測確認這個 demo 可以安全嵌入 iframe）。`livePreview: true` 的專案（農業行情比較網站、展覽語音導覽系統）用大圖卡片（`md:col-span-2`），卡片左半邊直接嵌入該專案**部署好的真實網站**（用 CSS `scale(0.4)` 把 iframe 內容放大到 250% 再縮小顯示，模擬「桌面版縮圖」效果，`pointer-events-none` 讓它是純預覽不能互動）——好處是內容永遠是最新的，不會因為改版而過期，也不需要另外準備截圖檔案。其餘專案（Artstore、Attendance System、Mos Sales App）維持純文字、較輕量的條列樣式。用 Tailwind `grid-auto-flow: dense` 讓兩種卡片自動排出不對稱網格，不用手動調整資料順序。
 4. **更多經歷改成 zigzag 時間軸**：`Experience` 型別新增 `embeds?: ExperienceEmbed[]`，項目用 `src/components/ExperienceItem.tsx` 沿中央/左側時間軸縱線左右交錯排列（`src/app/experiences/page.tsx` 畫縱線，手機版收合成單欄、時間軸貼左）。
-5. **iframe 嵌入**：新增 `src/components/EmbedFrame.tsx`（p5.js 用正方形畫框、YouTube 用 16:9 畫框，外層都有畫廊風格的細邊框＋陰影「相框」效果）。
+5. **iframe 嵌入**：新增 `src/components/EmbedFrame.tsx`，YouTube 用 16:9 畫框；p5.js 用 sketch 實際的 `createCanvas()` 尺寸（`nativeWidth`/`nativeHeight`，見 `experiences.ts`）——**p5.js 編輯器的「full」檢視不會自動縮放適應 iframe 大小，而是照畫布原生像素渲染**，如果直接把它塞進一個比例不符的方形/固定尺寸畫框會被裁切。做法是讓 iframe 用畫布原生尺寸（例如 B612 是 500×1000）渲染，外層再用 CSS `transform: scale()` 整個縮小到想要的顯示寬度（預設 300px），這樣才能完整顯示整件作品又不用佔滿版面。外層都有畫廊風格的細邊框＋陰影「相框」效果。
 6. **demo 連結更新**：Attendance System 補上新的 demo 連結；展覽語音導覽系統補上 demo 連結；Artstore 維持純文字、不放壞掉的 demo 連結。
 
 ### iframe 嵌入測試結果（用無頭瀏覽器實際載入驗證過，不是憑猜測）
@@ -53,7 +53,7 @@
 
 | 項目 | 結果 | 處理方式 |
 |---|---|---|
-| 小王子的 B612（`/full/x8a54f3s_`） | ✅ 正常渲染 | 直接嵌入 p5.js iframe |
+| 小王子的 B612（`/full/x8a54f3s_`） | ✅ 正常渲染（但畫布原生尺寸是 500×1000，一開始用固定方形畫框裁切掉大半作品，2026-08-22 改成「原生尺寸 + CSS scale 縮小」才顯示完整） | 嵌入 p5.js iframe，`nativeWidth: 500, nativeHeight: 1000` |
 | 聽樹木在說話（YouTube `/embed/LtkxBMrIcHI`） | ✅ 正常渲染 | 直接嵌入 YouTube iframe，另一支影片（`dE76uhe8yB0`）保留為連結 |
 | p5.js 手機殼設計課程教學片段（YouTube `/embed/CBCg_8X5azg`） | ✅ 正常渲染 | 直接嵌入 YouTube iframe |
 | p5.js 手機殼設計課程「修改後」（`/full/rOoA_hkb7`） | ❌ **不是被 iframe 權限擋住，是這個 p5.js 專案本身有程式錯誤**（`sketch.js` 第 27 行把 `COLOR` 陣列全部註解掉但後面程式碼還在用它，導致畫布空白，console 有 p5.js 自己噴出的錯誤訊息） | 沒有嵌入，改成純連結按鈕（編輯器修改前/修改後、課程講義）。**這是 Sydney 自己 p5.js 專案的既有 bug，不是這個作品集網站的問題**；如果之後想嵌入，需要先回 p5.js 編輯器把那幾行 `COLOR` 相關程式碼修好 |
@@ -93,7 +93,7 @@ src/
     Interests.tsx                    # 首頁興趣區塊：不規則寬度/留白的卡片排列，讀 data/interests.ts
     ProjectCard.tsx                   # 作品集卡片，依 project.livePreview 切換「大圖 live iframe 預覽卡片」/「純文字條列」兩種樣式
     ExperienceItem.tsx                 # 更多經歷單一項目：時間軸圓點 + 左右交錯定位 + 內容卡片
-    EmbedFrame.tsx                      # p5.js / YouTube iframe 畫框（正方形 or 16:9，畫廊風格邊框+陰影）
+    EmbedFrame.tsx                      # p5.js（原生尺寸+CSS scale 縮小）/ YouTube（16:9）iframe 畫框，畫廊風格邊框+陰影
     Footer.tsx                           # 版權資訊 + Email/GitHub 連結
   data/
     profile.ts                           # 個人資料：姓名、系級、求職狀態（badge/detail）、自我介紹、技能、聯絡方式
@@ -111,7 +111,7 @@ src/
 - 修改自我介紹、求職狀態、技能標籤、聯絡方式 → 改 `src/data/profile.ts`
 - 修改興趣清單（含補照片）→ 改 `src/data/interests.ts`
 - 新增／移除／修改主要作品集卡片 → 改 `src/data/projects.ts`（`livePreview: true` 會變成大圖即時預覽卡片並佔兩欄，記得先照本文件「iframe 嵌入測試結果」的方法實測過該 demo 能不能穩定嵌入再設定；沒有 `livePreview` 就是純文字條列卡片；沒有 demo 連結時不要填 `demo` 欄位）
-- 新增／移除／修改更多經歷卡片 → 改 `src/data/experiences.ts`（`links` 陣列可以放 1 個到多個連結；`embeds` 陣列可以放 p5.js 或 YouTube 嵌入，型別是 `{ kind: "p5"; url }` 或 `{ kind: "youtube"; videoId }`，不確定能不能嵌入的來源建議先用本文件「iframe 嵌入測試結果」的方法實測再加）
+- 新增／移除／修改更多經歷卡片 → 改 `src/data/experiences.ts`（`links` 陣列可以放 1 個到多個連結；`embeds` 陣列可以放 p5.js 或 YouTube 嵌入，型別是 `{ kind: "p5"; url; nativeWidth; nativeHeight; displayWidth? }` 或 `{ kind: "youtube"; videoId }`。p5.js 的 `nativeWidth`/`nativeHeight` 要填該 sketch `createCanvas()` 的實際尺寸，不然畫面會被裁切，見上方 iframe 測試結果表格的說明；不確定能不能嵌入的來源建議先用本文件「iframe 嵌入測試結果」的方法實測再加）
 
 ## 部署資訊
 
