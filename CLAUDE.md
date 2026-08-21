@@ -71,7 +71,7 @@
 
 - p5.js「手機殼設計課程（修改後）」的 sketch 本身有 bug（見上表），畫布目前空白。之後如果 Sydney 想把它也嵌入網站，要先去 p5.js 編輯器把 `COLOR` 那幾行改好。
 - Attendance System 的 live 預覽不穩定（見上表），目前用純文字卡片 + 正常可用的 demo 連結。如果之後 Sydney 修好那個站台自己的第三方 iframe 相容性問題，可以把 `src/data/projects.ts` 裡 Attendance System 那筆加上 `livePreview: true` 改回大圖即時預覽卡片。
-- **自我介紹三段文字（`profile.bio`）這幾輪都刻意保持原樣沒有動**，Sydney 之後會另外提供新版文字，屆時直接改 `src/data/profile.ts` 的 `bio` 陣列即可。
+- 自我介紹（`profile.bio`）已在 2026-08-22 更新為新版本（藝術背景 + 走向程式的心路歷程，共 7 段），標點符號統一為全形。之後如果還要再改，直接改 `src/data/profile.ts` 的 `bio` 陣列即可。
 - 目前沒有放 LinkedIn 或其他社群連結（尚未提供），之後有的話可以加進 `src/data/profile.ts` 的 `contact` 物件，並在 `About.tsx` / `Footer.tsx` 加上對應連結。
 - 「興趣」區塊目前是純文字，`Interest` 型別已預留 `image?: string`，之後補照片時在 `src/data/interests.ts` 對應項目加上 `image` 即可。
 - Attendance System、Mos Sales App 標示為「2026/7 ~ 2026/8」（已結束），之後有重大進展或想拿掉時間標示時，記得更新 `statusLabel` 或直接移除該欄位。
