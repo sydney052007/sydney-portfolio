@@ -36,9 +36,7 @@
 - [x] GitHub repo 建立（public）：`sydney052007/sydney-portfolio`
 - [x] 第三輪大改版：多頁架構、editorial 視覺方向、iframe 嵌入、demo 連結更新，已 commit / push
 - [x] 作品集大圖卡片改成「即時 live iframe 預覽」（不是靜態截圖），並實測驗證哪些 demo 適合嵌入（見下方表格）
-- [ ] Vercel 專案建立與正式部署（連結 GitHub repo，非 CLI 檔案式部署）
-
-> 部署完成後，請回來把下方「部署資訊」的 Vercel 網址補齊。
+- [x] Vercel 專案建立與正式部署（連結 GitHub repo，非 CLI 檔案式部署），已關閉部署保護，正式網址可公開存取
 
 ### 這一輪（第三輪：多頁 + editorial 改版）做了什麼
 
@@ -118,7 +116,8 @@ src/
 ## 部署資訊
 
 - GitHub repo：`https://github.com/sydney052007/sydney-portfolio`（public，多頁 editorial 改版已 push 上去）
-- Vercel 專案網址：*（待 Vercel 部署完成後補上正式網址，例如 `https://sydney-portfolio-xxxx.vercel.app` 或自訂網域）*
+- Vercel 專案網址：`https://sydney-portfolio-iota.vercel.app/`（已連結 GitHub repo，push 到 main 會自動重新部署）
+  - 部署時 Vercel 專案預設開啟了「Vercel Authentication」（部署保護），會導致所有訪客（包含面試官）看到 404，Sydney 已在 Vercel Dashboard → Settings → Deployment Protection 手動關閉。**之後如果重新連結專案或建立新專案，記得檢查這個設定沒有被重新打開。**
 
 ## 之後的維護方式
 
