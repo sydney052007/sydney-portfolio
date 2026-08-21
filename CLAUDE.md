@@ -34,7 +34,7 @@
 - [x] 本地以 Playwright 檢查 390px（手機）/ 820px（平板）/ 1440px（桌機）三種寬度、三個頁面、頁面間導覽（URL 確實改變）
 - [x] Git 初始化並完成第一版 commit / push（單頁版本）
 - [x] GitHub repo 建立（public）：`sydney052007/sydney-portfolio`
-- [x] 第三輪大改版：多頁架構、editorial 視覺方向、iframe 嵌入、demo 連結更新（**尚未 commit / push，待 Sydney 確認後執行**）
+- [x] 第三輪大改版：多頁架構、editorial 視覺方向、iframe 嵌入、demo 連結更新，已 commit / push
 - [x] 作品集大圖卡片改成「即時 live iframe 預覽」（不是靜態截圖），並實測驗證哪些 demo 適合嵌入（見下方表格）
 - [ ] Vercel 專案建立與正式部署（連結 GitHub repo，非 CLI 檔案式部署）
 
@@ -117,7 +117,7 @@ src/
 
 ## 部署資訊
 
-- GitHub repo：`https://github.com/sydney052007/sydney-portfolio`（public，目前 push 上去的還是單頁版本，這輪多頁改版待確認後 push）
+- GitHub repo：`https://github.com/sydney052007/sydney-portfolio`（public，多頁 editorial 改版已 push 上去）
 - Vercel 專案網址：*（待 Vercel 部署完成後補上正式網址，例如 `https://sydney-portfolio-xxxx.vercel.app` 或自訂網域）*
 
 ## 之後的維護方式
