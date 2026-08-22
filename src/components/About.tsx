@@ -15,7 +15,7 @@ export default function About() {
           {profile.status.badge}
         </span>
       </div>
-      <p className="mt-2 text-sm text-muted">{profile.status.detail}</p>
+      <p className="mt-4 text-sm text-muted">{profile.status.detail}</p>
 
       <div className="mt-10 max-w-2xl border-l-2 border-accent/40 pl-6">
         <div className="space-y-4 text-base leading-8 text-foreground/90">

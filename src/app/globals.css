@@ -34,6 +34,10 @@ body {
   font-family: var(--font-system);
 }
 
+p {
+  letter-spacing: 0.03em;
+}
+
 @keyframes page-fade-in {
   from {
     opacity: 0;
