@@ -1,11 +1,11 @@
 import About from "@/components/About";
-import Interests from "@/components/Interests";
+import PagePreviews from "@/components/PagePreviews";
 
 export default function Home() {
   return (
     <>
       <About />
-      <Interests />
+      <PagePreviews />
     </>
   );
 }

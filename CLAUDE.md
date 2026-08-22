@@ -9,10 +9,11 @@
 - 框架：Next.js（App Router，**真正的多頁路由**，不是錨點單頁）+ TypeScript
 - 樣式：Tailwind CSS v4（CSS-first 設定，`src/app/globals.css` 內的 `@theme` 區塊，沒有 `tailwind.config.ts`）
 - 視覺風格：編輯設計（editorial）／藝廊質感，不是制式工程師排版。每個頁面各自有獨立的版面邏輯，**沒有共用同一張卡片元件套所有內容**：
-  - 首頁興趣預覽區塊：不規則寬度＋錯落留白的卡片排列，不是四等份方格
+  - 首頁最下方：三個頁面（作品集／更多經歷／興趣）的預告區塊，`PagePreviews.tsx`，套用下面的「清單類內容統一規則」
   - 作品集：不對稱網格，有截圖的專案卡片放大佔兩欄，純文字專案維持一欄（用 CSS `grid-auto-flow: dense` 自動把兩張純文字卡片並排補齊空隙）
   - 更多經歷：左右交錯（zigzag）時間軸，中央/左側一條時間軸縱線 + 圓點連接每個項目
   - `/interests` 興趣頁：4 個可點擊的分類小方塊（繪畫／音樂／織品手作／烘焙），點擊切換下方同一個內容面板；烘焙面板另外有一層縮圖清單 → 點縮圖展開食譜文字的巢狀互動，是全站互動邏輯最複雜的一頁
+- **清單類內容統一規則**（2026-08-22 全站巡過一輪定案）：除了 `/experiences` 因為時間軸圓點需要邊框卡片當視覺錨點而保留邊框，**其餘所有「清單/卡片式」內容一律採用 `/projects` 的基準樣式**：無邊框、`border-t border-dashed border-border` 細分隔線區隔每個項目、搭配 `font-serif text-xs text-accent` 的編號（01、02...）或小標籤。新增任何清單類 UI（首頁預告區塊、`/interests` 的分類/媒材清單/食譜展開）都套用這個樣式，不要用圓角陰影卡片或灰框矩形（那是表單/後台介面的視覺語言，不是這個網站的調性）。`/projects` 的「大圖 live 預覽」卡片、`/experiences` 的時間軸卡片是唯二的例外，因為各自有功能性理由（圖片/iframe 畫框、時間軸視覺錨點）需要邊框。
 - 字型：**不使用 `next/font/google`**（避免部署環境連不到 Google Fonts 導致建置失敗），改用系統字型堆疊，兩組字體家族做對比：
   - `--font-system`（內文，Tailwind `font-sans`）：`-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Roboto, Helvetica, Arial, sans-serif`
   - `--font-editorial`（標題，Tailwind `font-serif`）：`"Iowan Old Style", "Palatino Linotype", Palatino, "Songti TC", "PMingLiU", Georgia, "Noto Serif TC", serif`
@@ -39,6 +40,12 @@
 - [x] 作品集大圖卡片改成「即時 live iframe 預覽」（不是靜態截圖），並實測驗證哪些 demo 適合嵌入（見下方表格）
 - [x] Vercel 專案建立與正式部署（連結 GitHub repo，非 CLI 檔案式部署），已關閉部署保護，正式網址可公開存取
 - [x] 新增 `/interests` 興趣頁（4 個分類切換 + 烘焙食譜清單/展開互動），Navbar 加上「興趣」連結
+- [x] `/interests` 頁視覺改成跟 `/projects` 一致的無邊框分隔線風格（4 分類方塊、媒材清單、食譜展開框）
+- [x] 首頁最下方從完整興趣區塊改成「作品集／更多經歷／興趣」三頁預告，套用全站統一的清單樣式；刪除不再使用的 `Interests.tsx`、`data/interests.ts`
+
+### 第五輪：首頁三分頁預告 + 全站清單樣式定案
+
+首頁最下方（`About` 之後）原本是完整的興趣區塊（4 個興趣各自完整描述），改成 `src/components/PagePreviews.tsx`：作品集／更多經歷／興趣三個頁面的簡短預告（各頁副標題的縮短版）+「前往 →」連結，直接套用 `/projects` 的無邊框分隔線樣式（`border-t border-dashed`、`01/02/03` 編號、`font-serif` 標題）。因為這個元件取代了原本的首頁興趣預覽，舊的 `src/components/Interests.tsx` 和 `src/data/interests.ts` 已經沒有任何地方引用，直接刪除。**全站清單類內容的視覺風格到這輪算是定案**：baseline 是 `/projects`，唯二例外是 `/experiences` 時間軸卡片和 `/projects` 本身的大圖 live 預覽卡片（原因見上方「清單類內容統一規則」）。
 
 ### 第四輪：`/interests` 興趣頁
 
@@ -49,7 +56,7 @@
 
 ### 這一輪（第三輪：多頁 + editorial 改版）做了什麼
 
-1. **多頁路由**：拆成 `src/app/page.tsx`（首頁：自我介紹＋興趣）、`src/app/projects/page.tsx`（作品集）、`src/app/experiences/page.tsx`（更多經歷）。Navbar／Footer 移到 `src/app/layout.tsx` 全站共用，`src/app/template.tsx` 負責路由切換時的淡入轉場。
+1. **多頁路由**：拆成 `src/app/page.tsx`（首頁：自我介紹＋三頁預告）、`src/app/projects/page.tsx`（作品集）、`src/app/experiences/page.tsx`（更多經歷）、`src/app/interests/page.tsx`（興趣）。Navbar／Footer 移到 `src/app/layout.tsx` 全站共用，`src/app/template.tsx` 負責路由切換時的淡入轉場。
 2. **視覺方向改成 editorial／藝廊質感**：暖米白背景、標題用 serif／內文用 sans 的字體對比、強調色用在時間軸縱線、bio 裝飾線、專案編號等版面元素上，不只是標籤底色。
 3. **作品集不對稱網格 + live 即時預覽**：`Project` 型別新增 `livePreview?: boolean`（是否已實測確認這個 demo 可以安全嵌入 iframe）。`livePreview: true` 的專案（農業行情比較網站、展覽語音導覽系統）用大圖卡片（`md:col-span-2`），卡片左半邊直接嵌入該專案**部署好的真實網站**（用 CSS `scale(0.4)` 把 iframe 內容放大到 250% 再縮小顯示，模擬「桌面版縮圖」效果，`pointer-events-none` 讓它是純預覽不能互動）——好處是內容永遠是最新的，不會因為改版而過期，也不需要另外準備截圖檔案。其餘專案（Artstore、Attendance System、Mos Sales App）維持純文字、較輕量的條列樣式。用 Tailwind `grid-auto-flow: dense` 讓兩種卡片自動排出不對稱網格，不用手動調整資料順序。
 4. **更多經歷改成 zigzag 時間軸**：`Experience` 型別新增 `embeds?: ExperienceEmbed[]`，項目用 `src/components/ExperienceItem.tsx` 沿中央/左側時間軸縱線左右交錯排列（`src/app/experiences/page.tsx` 畫縱線，手機版收合成單欄、時間軸貼左）。
@@ -82,7 +89,6 @@
 - Attendance System 的 live 預覽不穩定（見上表），目前用純文字卡片 + 正常可用的 demo 連結。如果之後 Sydney 修好那個站台自己的第三方 iframe 相容性問題，可以把 `src/data/projects.ts` 裡 Attendance System 那筆加上 `livePreview: true` 改回大圖即時預覽卡片。
 - 自我介紹（`profile.bio`）已在 2026-08-22 更新為新版本（藝術背景 + 走向程式的心路歷程，共 7 段），標點符號統一為全形。之後如果還要再改，直接改 `src/data/profile.ts` 的 `bio` 陣列即可。
 - 目前沒有放 LinkedIn 或其他社群連結（尚未提供），之後有的話可以加進 `src/data/profile.ts` 的 `contact` 物件，並在 `About.tsx` / `Footer.tsx` 加上對應連結。
-- 首頁「興趣」預覽區塊目前是純文字，`Interest` 型別已預留 `image?: string`，之後補照片時在 `src/data/interests.ts` 對應項目加上 `image` 即可。
 - `/interests` 頁面的繪畫、織品手作目前都沒有照片，`src/data/media.ts` 裡每個 `MediaItem` 已預留 `images?: string[]`，之後補照片把檔案放進 `public/images/interests/` 並在對應項目填上路徑陣列即可，不用改元件邏輯。
 - 烘焙食譜清單預期維持 5-6 則、汰換不無限增加，之後要換掉某一則時直接改 `src/data/recipes.ts` 對應物件（換照片記得同時把新檔案放進 `public/images/interests/baking/`）。
 - Attendance System、Mos Sales App 標示為「2026/7 ~ 2026/8」（已結束），之後有重大進展或想拿掉時間標示時，記得更新 `statusLabel` 或直接移除該欄位。
@@ -95,14 +101,14 @@ src/
     layout.tsx              # 全站 Metadata、<html>/<body>、掛 Navbar + Footer + <main>
     template.tsx              # 路由切換時的淡入轉場（page-fade-in，純 CSS，不用動畫函式庫）
     globals.css                 # Tailwind 匯入、色彩變數（含強調色）、兩組字體堆疊、page-fade-in keyframe
-    page.tsx                     # 首頁「/」：組裝 About + Interests（興趣預覽）
+    page.tsx                     # 首頁「/」：組裝 About + PagePreviews（三頁預告）
     interests/page.tsx            # 「/interests」：興趣頁頁首 + InterestsExplorer
     projects/page.tsx              # 「/projects」：作品集標題 + 不對稱網格（grid-auto-flow: dense）
     experiences/page.tsx            # 「/experiences」：更多經歷標題 + zigzag 時間軸（縱線 + ExperienceItem）
   components/
     Navbar.tsx                       # "use client"，sticky 導覽列，usePathname() 判斷 active 頁面（4 個連結）
     About.tsx                         # 首頁自我介紹：姓名（serif）、系級、求職狀態 badge、bio（左側裝飾線）、技能標籤、聯絡方式
-    Interests.tsx                      # 首頁興趣「預覽」區塊：不規則寬度/留白的卡片排列，讀 data/interests.ts（跟 /interests 頁是兩回事）
+    PagePreviews.tsx                    # 首頁最下方三頁預告（作品集/更多經歷/興趣），套用 /projects 基準樣式
     InterestsExplorer.tsx               # "use client"，/interests 頁的 4 分類切換 tab + 內容面板容器
     PaintingPanel.tsx / TextilePanel.tsx  # 繪畫／織品手作內容面板，都是 MediaList 包一層文字說明
     MediaList.tsx                          # 繪畫/織品手作共用的純文字清單元件，讀 data/media.ts，images? 預留擴充
@@ -114,7 +120,6 @@ src/
     Footer.tsx                                   # 版權資訊 + Email/GitHub 連結
   data/
     profile.ts                                   # 個人資料：姓名、系級、求職狀態（badge/detail）、自我介紹、技能、聯絡方式
-    interests.ts                                  # 首頁興趣「預覽」清單（型別 Interest：title/description/image?）
     media.ts                                       # /interests 頁的繪畫/織品手作資料（型別 MediaItem：name/images?）+ 音樂文字常數 + 織品手作開場白
     recipes.ts                                      # 烘焙食譜清單（型別 Recipe：name/image/description/meta）
     projects.ts                                      # 主要專案清單（型別 Project：name/description/tech/github/demo?/livePreview?/statusLabel?）
@@ -128,7 +133,7 @@ src/
 **之後要改內容，只需要動 `src/data/*.ts`，不用碰元件程式碼：**
 
 - 修改自我介紹、求職狀態、技能標籤、聯絡方式 → 改 `src/data/profile.ts`
-- 修改首頁興趣「預覽」卡片（含補照片）→ 改 `src/data/interests.ts`
+- 修改首頁最下方三頁預告文字 → 改 `src/components/PagePreviews.tsx` 裡的 `previews` 陣列
 - 修改 `/interests` 頁的繪畫／織品手作項目或音樂文字 → 改 `src/data/media.ts`；補照片時把檔案放進 `public/images/interests/` 並在對應 `MediaItem` 的 `images` 陣列加上路徑
 - 新增／移除／修改烘焙食譜 → 改 `src/data/recipes.ts`，照片放進 `public/images/interests/baking/`（建議先壓縮過再放，原始手機照片單張常常 2-4MB）
 - 新增／移除／修改主要作品集卡片 → 改 `src/data/projects.ts`（`livePreview: true` 會變成大圖即時預覽卡片並佔兩欄，記得先照本文件「iframe 嵌入測試結果」的方法實測過該 demo 能不能穩定嵌入再設定；沒有 `livePreview` 就是純文字條列卡片；沒有 demo 連結時不要填 `demo` 欄位）
