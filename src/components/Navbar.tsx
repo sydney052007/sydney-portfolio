@@ -19,7 +19,7 @@ export default function Navbar() {
       <nav className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-y-2 px-6 py-4">
         <Link
           href="/"
-          className="whitespace-nowrap font-serif text-base font-semibold tracking-tight hover:text-accent"
+          className="whitespace-nowrap font-serif text-base font-semibold hover:text-accent"
         >
           {profile.displayName}
         </Link>

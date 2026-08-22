@@ -11,7 +11,7 @@ export default function InterestsPage() {
       <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
         Off Duty
       </p>
-      <h1 className="mt-2 font-serif text-4xl font-semibold tracking-tight sm:text-5xl">
+      <h1 className="mt-2 font-serif text-4xl font-semibold sm:text-5xl">
         興趣
       </h1>
       <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted">

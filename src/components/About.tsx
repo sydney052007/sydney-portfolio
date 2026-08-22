@@ -8,7 +8,7 @@ export default function About() {
       </p>
 
       <div className="mt-3 flex flex-wrap items-end gap-4">
-        <h1 className="font-serif text-5xl font-semibold leading-none tracking-tight sm:text-6xl">
+        <h1 className="font-serif text-5xl font-semibold leading-none sm:text-6xl">
           {profile.displayName}
         </h1>
         <span className="mb-1.5 rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent">
