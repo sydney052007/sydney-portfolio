@@ -42,7 +42,7 @@ h1,
 h2,
 h3,
 h4 {
-  letter-spacing: 0.02em;
+  letter-spacing: 0.06em;
 }
 
 @keyframes page-fade-in {
