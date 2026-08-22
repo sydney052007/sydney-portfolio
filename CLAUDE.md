@@ -10,7 +10,7 @@
 - 樣式：Tailwind CSS v4（CSS-first 設定，`src/app/globals.css` 內的 `@theme` 區塊，沒有 `tailwind.config.ts`）
 - 視覺風格：編輯設計（editorial）／藝廊質感，不是制式工程師排版。每個頁面各自有獨立的版面邏輯，**沒有共用同一張卡片元件套所有內容**：
   - 首頁最下方：三個頁面（作品集／更多經歷／興趣）的預告區塊，`PagePreviews.tsx`，套用下面的「清單類內容統一規則」
-  - 作品集：不對稱網格，有截圖的專案卡片放大佔兩欄，純文字專案維持一欄（用 CSS `grid-auto-flow: dense` 自動把兩張純文字卡片並排補齊空隙）
+  - 作品集：不對稱網格，有截圖的專案卡片放大佔兩欄，純文字專案維持一欄（`projects/page.tsx` 的 `layoutProjects()` 依序決定每張卡片要不要跟下一張純文字卡片並排，不用 `grid-auto-flow: dense`——dense 會為了補空隙把後面的卡片拉到前面，破壞 01/02/03 的閱讀順序，2026-08-22 已改掉）
   - 更多經歷：左右交錯（zigzag）時間軸，中央/左側一條時間軸縱線 + 圓點連接每個項目
   - `/interests` 興趣頁：4 個可點擊的分類小方塊（繪畫／音樂／織品手作／烘焙），點擊切換下方同一個內容面板；烘焙面板另外有一層縮圖清單 → 點縮圖展開食譜文字的巢狀互動，是全站互動邏輯最複雜的一頁
 - **清單類內容統一規則**（2026-08-22 全站巡過一輪定案）：除了 `/experiences` 因為時間軸圓點需要邊框卡片當視覺錨點而保留邊框，**其餘所有「清單/卡片式」內容一律採用 `/projects` 的基準樣式**：無邊框、`border-t border-dashed border-border` 細分隔線區隔每個項目、搭配 `font-serif text-xs text-accent` 的編號（01、02...）或小標籤。新增任何清單類 UI（首頁預告區塊、`/interests` 的分類/媒材清單/食譜展開）都套用這個樣式，不要用圓角陰影卡片或灰框矩形（那是表單/後台介面的視覺語言，不是這個網站的調性）。`/projects` 的「大圖 live 預覽」卡片、`/experiences` 的時間軸卡片是唯二的例外，因為各自有功能性理由（圖片/iframe 畫框、時間軸視覺錨點）需要邊框。
@@ -58,7 +58,7 @@
 
 1. **多頁路由**：拆成 `src/app/page.tsx`（首頁：自我介紹＋三頁預告）、`src/app/projects/page.tsx`（作品集）、`src/app/experiences/page.tsx`（更多經歷）、`src/app/interests/page.tsx`（興趣）。Navbar／Footer 移到 `src/app/layout.tsx` 全站共用，`src/app/template.tsx` 負責路由切換時的淡入轉場。
 2. **視覺方向改成 editorial／藝廊質感**：暖米白背景、標題用 serif／內文用 sans 的字體對比、強調色用在時間軸縱線、bio 裝飾線、專案編號等版面元素上，不只是標籤底色。
-3. **作品集不對稱網格 + live 即時預覽**：`Project` 型別新增 `livePreview?: boolean`（是否已實測確認這個 demo 可以安全嵌入 iframe）。`livePreview: true` 的專案（農業行情比較網站、展覽語音導覽系統）用大圖卡片（`md:col-span-2`），卡片左半邊直接嵌入該專案**部署好的真實網站**（用 CSS `scale(0.4)` 把 iframe 內容放大到 250% 再縮小顯示，模擬「桌面版縮圖」效果，`pointer-events-none` 讓它是純預覽不能互動）——好處是內容永遠是最新的，不會因為改版而過期，也不需要另外準備截圖檔案。其餘專案（Artstore、Attendance System、Mos Sales App）維持純文字、較輕量的條列樣式。用 Tailwind `grid-auto-flow: dense` 讓兩種卡片自動排出不對稱網格，不用手動調整資料順序。
+3. **作品集不對稱網格 + live 即時預覽**：`Project` 型別新增 `livePreview?: boolean`（是否已實測確認這個 demo 可以安全嵌入 iframe）。`livePreview: true` 的專案（農業行情比較網站、展覽語音導覽系統）用大圖卡片（`md:col-span-2`），卡片左半邊直接嵌入該專案**部署好的真實網站**（用 CSS `scale(0.4)` 把 iframe 內容放大到 250% 再縮小顯示，模擬「桌面版縮圖」效果，`pointer-events-none` 讓它是純預覽不能互動）——好處是內容永遠是最新的，不會因為改版而過期，也不需要另外準備截圖檔案。其餘專案（Artstore、Attendance System、Mos Sales App）維持純文字、較輕量的條列樣式，`ProjectCard` 多一個 `wide` prop 控制純文字卡片要不要佔滿兩欄。**注意：曾經用過 Tailwind `grid-auto-flow: dense` 讓卡片自動排出不對稱網格，但 dense 會為了補空隙把後面的卡片視覺上拉到前面（例如 04 跑到 02 上面），閱讀順序跟編號對不起來，2026-08-22 已經改成 `layoutProjects()` 顯式計算版面，卡片一律照陣列順序排列，不會再有這個問題。**
 4. **更多經歷改成 zigzag 時間軸**：`Experience` 型別新增 `embeds?: ExperienceEmbed[]`，項目用 `src/components/ExperienceItem.tsx` 沿中央/左側時間軸縱線左右交錯排列（`src/app/experiences/page.tsx` 畫縱線，手機版收合成單欄、時間軸貼左）。
 5. **iframe 嵌入**：新增 `src/components/EmbedFrame.tsx`，YouTube 用 16:9 畫框；p5.js 用 sketch 實際的 `createCanvas()` 尺寸（`nativeWidth`/`nativeHeight`，見 `experiences.ts`）——**p5.js 編輯器的「full」檢視不會自動縮放適應 iframe 大小，而是照畫布原生像素渲染**，如果直接把它塞進一個比例不符的方形/固定尺寸畫框會被裁切。做法是讓 iframe 用畫布原生尺寸（例如 B612 是 500×1000）渲染，外層再用 CSS `transform: scale()` 整個縮小到想要的顯示寬度（預設 300px），這樣才能完整顯示整件作品又不用佔滿版面。外層都有畫廊風格的細邊框＋陰影「相框」效果。
 6. **demo 連結更新**：Attendance System 補上新的 demo 連結；展覽語音導覽系統補上 demo 連結；Artstore 維持純文字、不放壞掉的 demo 連結。
@@ -103,7 +103,7 @@ src/
     globals.css                 # Tailwind 匯入、色彩變數（含強調色）、兩組字體堆疊、page-fade-in keyframe
     page.tsx                     # 首頁「/」：組裝 About + PagePreviews（三頁預告）
     interests/page.tsx            # 「/interests」：興趣頁頁首 + InterestsExplorer
-    projects/page.tsx              # 「/projects」：作品集標題 + 不對稱網格（grid-auto-flow: dense）
+    projects/page.tsx              # 「/projects」：作品集標題 + 不對稱網格（layoutProjects() 顯式計算卡片順序/寬度，不用 grid-auto-flow: dense）
     experiences/page.tsx            # 「/experiences」：更多經歷標題 + zigzag 時間軸（縱線 + ExperienceItem）
   components/
     Navbar.tsx                       # "use client"，sticky 導覽列，usePathname() 判斷 active 頁面（4 個連結）
