@@ -42,13 +42,15 @@ export default function BakingPanel() {
       {active && (
         <div
           key={active.name}
-          className="page-fade-in mt-8 max-w-2xl rounded-2xl border border-accent/20 bg-accent-soft/40 p-6"
+          className="page-fade-in mt-10 max-w-2xl border-l-2 border-accent/40 pl-6"
         >
-          <h3 className="font-serif text-lg font-semibold">{active.name}</h3>
-          <p className="mt-3 text-sm leading-relaxed text-foreground/85">
+          <h3 className="font-serif text-2xl font-semibold leading-snug">
+            {active.name}
+          </h3>
+          <p className="mt-4 text-sm leading-relaxed text-foreground/85">
             {active.description}
           </p>
-          <p className="mt-3 text-xs text-muted">{active.meta}</p>
+          <p className="mt-4 text-xs text-muted">{active.meta}</p>
         </div>
       )}
     </div>

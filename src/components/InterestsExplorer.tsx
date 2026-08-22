@@ -20,17 +20,17 @@ export default function InterestsExplorer() {
 
   return (
     <div className="mt-10">
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-x-8 gap-y-4 md:grid-cols-4">
         {categories.map((category) => (
           <button
             key={category.id}
             type="button"
             onClick={() => setActive(category.id)}
             aria-pressed={active === category.id}
-            className={`rounded-2xl border px-5 py-4 text-left font-serif text-lg font-semibold transition-colors ${
+            className={`border-t pt-3 text-left font-serif text-lg font-semibold transition-colors ${
               active === category.id
-                ? "border-accent bg-accent-soft text-accent"
-                : "border-border text-foreground hover:border-accent/40"
+                ? "border-accent text-accent"
+                : "border-border text-foreground hover:text-accent"
             }`}
           >
             {category.label}
