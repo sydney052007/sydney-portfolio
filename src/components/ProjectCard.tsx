@@ -3,9 +3,11 @@ import type { Project } from "@/data/projects";
 export default function ProjectCard({
   project,
   index,
+  wide = false,
 }: {
   project: Project;
   index: number;
+  wide?: boolean;
 }) {
   const featured = Boolean(project.livePreview);
   const number = String(index + 1).padStart(2, "0");
@@ -86,7 +88,11 @@ export default function ProjectCard({
   }
 
   return (
-    <article className="flex flex-col border-t border-dashed border-border pt-5">
+    <article
+      className={`flex flex-col border-t border-dashed border-border pt-5 ${
+        wide ? "md:col-span-2" : ""
+      }`}
+    >
       <div className="flex items-start justify-between gap-3">
         <span className="font-serif text-xs text-muted">{number}</span>
         {project.statusLabel && (
