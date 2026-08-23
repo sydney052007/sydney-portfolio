@@ -25,6 +25,7 @@ export const projects: Project[] = [
     ],
     github: "https://github.com/sydney052007/artstore",
     demo: "https://artstore-iyld.vercel.app/home",
+    livePreview: true,
   },
   {
     name: "農業行情比較網站",
