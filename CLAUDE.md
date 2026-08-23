@@ -82,7 +82,7 @@
 | 農業行情比較網站（agri-price-compare） | ✅ 正常渲染，反覆測試皆穩定 | `livePreview: true`，大圖卡片嵌入即時預覽 |
 | 展覽語音導覽系統（siena-exhibition） | ✅ 正常渲染，反覆測試皆穩定 | `livePreview: true`，大圖卡片嵌入即時預覽 |
 | Attendance System（attendance-system-theta-two） | ⚠️ **不穩定**：單獨嵌入測試會正常顯示登入畫面，但放進實際頁面（跟另外兩個 iframe 同時載入）時，該站自己的 client-side 主題初始化邏輯偶爾會失敗，畫面整個空白（DOM 其實有載入，但 CSS 變數沒套上、視覺上什麼都看不到）。這是 Attendance System **自己的程式**在跨網域 iframe 環境下的既有脆弱點（很可能跟第三方 iframe 的 storage 存取限制有關），不是這個作品集網站能修的，而且用戶瀏覽器的第三方隱私限制只會讓這個問題更常出現 | 沒有設 `livePreview`，維持純文字條列卡片，但 `demo` 連結還留著、按下去直接開新分頁正常可用（單獨開啟這個網址完全沒問題，只有「嵌在 iframe 裡」不穩定） |
-| Artstore（artstore-iyld，2026-08-23 補上的新 demo） | ❌ 明確被擋：回傳 `X-Frame-Options: SAMEORIGIN` 且 CSP `frame-ancestors 'self'`，兩層都限制只有自己網域能嵌入，不是不穩定，是**確定不會顯示**（瀏覽器 console 直接報 CSP 違規） | 沒有設 `livePreview`，維持純文字條列卡片，`demo` 連結正常可用（直接開新分頁沒問題） |
+| Artstore（artstore-iyld，2026-08-23 補上的新 demo） | 一開始 ❌ 被 CSP `frame-ancestors 'self'` 擋掉；Sydney 把 Artstore 的 CSP 改成 `frame-ancestors 'self' https://sydney-portfolio-iota.vercel.app`（白名單加上正式網址）後 ✅ 正常渲染，已在正式網址上實測確認 | `livePreview: true`，大圖卡片嵌入即時預覽。**注意：這個 CSP 白名單是鎖定 `https://sydney-portfolio-iota.vercel.app` 這個確切網域**，所以本地 `npm run dev`（localhost）測試這張卡片時仍然會被擋，這是預期行為不是 bug；如果之後這個 Vercel 網址改變（例如換成自訂網域），要記得回 Artstore 那邊同步更新 CSP 白名單，不然嵌入又會失效 |
 
 ### 已知待辦 / 之後可能要補的事
 
