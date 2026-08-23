@@ -24,6 +24,7 @@ export const projects: Project[] = [
       "HAProxy",
     ],
     github: "https://github.com/sydney052007/artstore",
+    demo: "https://artstore-iyld.vercel.app/home",
   },
   {
     name: "農業行情比較網站",

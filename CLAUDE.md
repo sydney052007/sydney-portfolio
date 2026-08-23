@@ -61,7 +61,7 @@
 3. **作品集不對稱網格 + live 即時預覽**：`Project` 型別新增 `livePreview?: boolean`（是否已實測確認這個 demo 可以安全嵌入 iframe）。`livePreview: true` 的專案（農業行情比較網站、展覽語音導覽系統）用大圖卡片（`md:col-span-2`），卡片左半邊直接嵌入該專案**部署好的真實網站**（用 CSS `scale(0.4)` 把 iframe 內容放大到 250% 再縮小顯示，模擬「桌面版縮圖」效果，`pointer-events-none` 讓它是純預覽不能互動）——好處是內容永遠是最新的，不會因為改版而過期，也不需要另外準備截圖檔案。其餘專案（Artstore、Attendance System、Mos Sales App）維持純文字、較輕量的條列樣式，`ProjectCard` 多一個 `wide` prop 控制純文字卡片要不要佔滿兩欄。**注意：曾經用過 Tailwind `grid-auto-flow: dense` 讓卡片自動排出不對稱網格，但 dense 會為了補空隙把後面的卡片視覺上拉到前面（例如 04 跑到 02 上面），閱讀順序跟編號對不起來，2026-08-22 已經改成 `layoutProjects()` 顯式計算版面，卡片一律照陣列順序排列，不會再有這個問題。**
 4. **更多經歷改成 zigzag 時間軸**：`Experience` 型別新增 `embeds?: ExperienceEmbed[]`，項目用 `src/components/ExperienceItem.tsx` 沿中央/左側時間軸縱線左右交錯排列（`src/app/experiences/page.tsx` 畫縱線，手機版收合成單欄、時間軸貼左）。
 5. **iframe 嵌入**：新增 `src/components/EmbedFrame.tsx`，YouTube 用 16:9 畫框；p5.js 用 sketch 實際的 `createCanvas()` 尺寸（`nativeWidth`/`nativeHeight`，見 `experiences.ts`）——**p5.js 編輯器的「full」檢視不會自動縮放適應 iframe 大小，而是照畫布原生像素渲染**，如果直接把它塞進一個比例不符的方形/固定尺寸畫框會被裁切。做法是讓 iframe 用畫布原生尺寸（例如 B612 是 500×1000）渲染，外層再用 CSS `transform: scale()` 整個縮小到想要的顯示寬度（預設 300px），這樣才能完整顯示整件作品又不用佔滿版面。外層都有畫廊風格的細邊框＋陰影「相框」效果。
-6. **demo 連結更新**：Attendance System 補上新的 demo 連結；展覽語音導覽系統補上 demo 連結；Artstore 維持純文字、不放壞掉的 demo 連結。
+6. **demo 連結更新**：Attendance System 補上新的 demo 連結；展覽語音導覽系統補上 demo 連結；Artstore 在 2026-08-23 也補上新的 demo 連結（`artstore-iyld.vercel.app`），但這個網站自己設定了 CSP `frame-ancestors 'self'`，明確擋掉跨網域 iframe 嵌入，所以只加 `demo` 連結、沒有設 `livePreview`，卡片維持純文字樣式。
 
 ### iframe 嵌入測試結果（用無頭瀏覽器實際載入驗證過，不是憑猜測）
 
@@ -75,13 +75,14 @@
 | p5.js 手機殼設計課程「修改後」（`/full/rOoA_hkb7`） | ❌ **不是被 iframe 權限擋住，是這個 p5.js 專案本身有程式錯誤**（`sketch.js` 第 27 行把 `COLOR` 陣列全部註解掉但後面程式碼還在用它，導致畫布空白，console 有 p5.js 自己噴出的錯誤訊息） | 沒有嵌入，改成純連結按鈕（編輯器修改前/修改後、課程講義）。**這是 Sydney 自己 p5.js 專案的既有 bug，不是這個作品集網站的問題**；如果之後想嵌入，需要先回 p5.js 編輯器把那幾行 `COLOR` 相關程式碼修好 |
 | 典藏・記憶（akaSwap `event/csghs1250`） | ❌ 回傳 `X-Frame-Options: sameorigin`，瀏覽器直接拒絕顯示 | 沒有嵌入，改成連結按鈕 |
 
-作品集（三個有 demo 連結的專案，測試能不能當成 live 預覽嵌入卡片）：
+作品集（四個有 demo 連結的專案，測試能不能當成 live 預覽嵌入卡片）：
 
 | 專案 | 結果 | 處理方式 |
 |---|---|---|
 | 農業行情比較網站（agri-price-compare） | ✅ 正常渲染，反覆測試皆穩定 | `livePreview: true`，大圖卡片嵌入即時預覽 |
 | 展覽語音導覽系統（siena-exhibition） | ✅ 正常渲染，反覆測試皆穩定 | `livePreview: true`，大圖卡片嵌入即時預覽 |
 | Attendance System（attendance-system-theta-two） | ⚠️ **不穩定**：單獨嵌入測試會正常顯示登入畫面，但放進實際頁面（跟另外兩個 iframe 同時載入）時，該站自己的 client-side 主題初始化邏輯偶爾會失敗，畫面整個空白（DOM 其實有載入，但 CSS 變數沒套上、視覺上什麼都看不到）。這是 Attendance System **自己的程式**在跨網域 iframe 環境下的既有脆弱點（很可能跟第三方 iframe 的 storage 存取限制有關），不是這個作品集網站能修的，而且用戶瀏覽器的第三方隱私限制只會讓這個問題更常出現 | 沒有設 `livePreview`，維持純文字條列卡片，但 `demo` 連結還留著、按下去直接開新分頁正常可用（單獨開啟這個網址完全沒問題，只有「嵌在 iframe 裡」不穩定） |
+| Artstore（artstore-iyld，2026-08-23 補上的新 demo） | ❌ 明確被擋：回傳 `X-Frame-Options: SAMEORIGIN` 且 CSP `frame-ancestors 'self'`，兩層都限制只有自己網域能嵌入，不是不穩定，是**確定不會顯示**（瀏覽器 console 直接報 CSP 違規） | 沒有設 `livePreview`，維持純文字條列卡片，`demo` 連結正常可用（直接開新分頁沒問題） |
 
 ### 已知待辦 / 之後可能要補的事
 
