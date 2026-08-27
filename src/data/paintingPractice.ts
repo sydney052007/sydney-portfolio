@@ -4,286 +4,244 @@ export type PracticeFile = {
   height: number;
 };
 
-export type PracticeSet = {
+export type PracticeItem = {
   id: string;
   labelZh: string;
   labelEn: string;
   files: PracticeFile[];
 };
 
-// public/images/interests/painting/practice/<id>/<file>
-export const paintingPractice: PracticeSet[] = [
+export type PracticeCategory = {
+  id: string;
+  labelZh: string;
+  labelEn: string;
+  items: PracticeItem[];
+};
+
+// public/images/interests/painting/practice/<category-id>/<item-id>/<file>
+export const paintingPractice: PracticeCategory[] = [
   {
-    id: "artichoke",
-    labelZh: "洋薊",
-    labelEn: "Artichoke",
-    files: [
-      { file: "DSC08627.JPG", width: 1600, height: 1109 },
-      { file: "DSC08628.JPG", width: 1600, height: 899 },
-      { file: "DSC08630.JPG", width: 1600, height: 899 },
-      { file: "DSC08631.JPG", width: 1600, height: 1101 },
-      { file: "DSC08632.JPG", width: 1600, height: 899 },
-      { file: "DSC08634.JPG", width: 1600, height: 899 },
-      { file: "DSC08635.JPG", width: 1600, height: 899 },
-      { file: "DSC08636.JPG", width: 1600, height: 899 },
-      { file: "DSC08637.JPG", width: 1600, height: 1104 },
-      { file: "DSC08638.JPG", width: 1600, height: 899 },
-      { file: "DSC08640.JPG", width: 1600, height: 899 },
+    id: "fruit",
+    labelZh: "水果",
+    labelEn: "Fruit",
+    items: [
+      {
+        id: "grape",
+        labelZh: "葡萄",
+        labelEn: "Grape",
+        files: [
+          { file: "grape-1.jpg", width: 1600, height: 1120 },
+          { file: "grape-2.jpg", width: 1600, height: 1126 },
+          { file: "grape-3.jpg", width: 1600, height: 1122 },
+        ],
+      },
+      {
+        id: "kiwi",
+        labelZh: "奇異果",
+        labelEn: "Kiwi",
+        files: [
+          { file: "kiwi-1.jpg", width: 1600, height: 1113 },
+          { file: "kiwi-2.jpg", width: 1600, height: 1121 },
+          { file: "kiwi-3.jpg", width: 1600, height: 1116 },
+        ],
+      },
+      {
+        id: "mangosteen",
+        labelZh: "山竹",
+        labelEn: "Mangosteen",
+        files: [
+          { file: "mangosteen-1.jpg", width: 1600, height: 1169 },
+          { file: "mangosteen-2.jpg", width: 1600, height: 1126 },
+          { file: "mangosteen-3.jpg", width: 1600, height: 1121 },
+        ],
+      },
+      {
+        id: "passion-fruit",
+        labelZh: "百香果",
+        labelEn: "Passion Fruit",
+        files: [
+          { file: "passion-fruit-1.jpg", width: 1600, height: 1120 },
+          { file: "passion-fruit-2.jpg", width: 1600, height: 1110 },
+          { file: "passion-fruit-3.jpg", width: 1600, height: 1107 },
+        ],
+      },
     ],
   },
   {
-    id: "asparagus",
-    labelZh: "蘆筍",
-    labelEn: "Asparagus",
-    files: [
-      { file: "DSC08716.JPG", width: 1600, height: 899 },
-      { file: "DSC08717.JPG", width: 1600, height: 899 },
-      { file: "DSC08718.JPG", width: 1600, height: 899 },
-      { file: "asparagus1.jpg", width: 1600, height: 1121 },
-      { file: "asparagus2.jpg", width: 1600, height: 1084 },
-      { file: "asparagus3.jpg", width: 1093, height: 1600 },
+    id: "vegetable",
+    labelZh: "蔬菜",
+    labelEn: "Vegetable",
+    items: [
+      {
+        id: "artichoke",
+        labelZh: "洋薊",
+        labelEn: "Artichoke",
+        files: [
+          { file: "artichoke-1.jpg", width: 1600, height: 1117 },
+          { file: "artichoke-2.jpg", width: 1600, height: 1118 },
+          { file: "artichoke-3.jpg", width: 1600, height: 1114 },
+        ],
+      },
+      {
+        id: "asparagus",
+        labelZh: "蘆筍",
+        labelEn: "Asparagus",
+        files: [
+          { file: "asparagus-1.jpg", width: 1119, height: 1600 },
+          { file: "asparagus-2.jpg", width: 1600, height: 1113 },
+          { file: "asparagus-3.jpg", width: 1600, height: 1117 },
+        ],
+      },
+      {
+        id: "brussels-sprout",
+        labelZh: "抱子甘藍",
+        labelEn: "Brussels Sprout",
+        files: [
+          { file: "brussels-sprout-1.jpg", width: 1600, height: 1124 },
+          { file: "brussels-sprout-2.jpg", width: 1600, height: 1123 },
+          { file: "brussels-sprout-3.jpg", width: 1600, height: 1117 },
+        ],
+      },
+      {
+        id: "carrot",
+        labelZh: "紅蘿蔔",
+        labelEn: "Carrot",
+        files: [
+          { file: "carrot-1.jpg", width: 1600, height: 1115 },
+          { file: "carrot-2.jpg", width: 1600, height: 1112 },
+          { file: "carrot-3.jpg", width: 1600, height: 1120 },
+        ],
+      },
+      {
+        id: "mushroom",
+        labelZh: "香菇",
+        labelEn: "Mushroom",
+        files: [
+          { file: "mushroom-1.jpg", width: 1600, height: 1123 },
+          { file: "mushroom-2.jpg", width: 1600, height: 1118 },
+          { file: "mushroom-3.jpg", width: 1600, height: 1115 },
+        ],
+      },
+      {
+        id: "onion",
+        labelZh: "洋蔥",
+        labelEn: "Onion",
+        files: [
+          { file: "onion-1.jpg", width: 1600, height: 1092 },
+          { file: "onion-2.jpg", width: 1600, height: 1119 },
+          { file: "onion-3.jpg", width: 1600, height: 1116 },
+        ],
+      },
+      {
+        id: "potato",
+        labelZh: "馬鈴薯",
+        labelEn: "Potato",
+        files: [
+          { file: "potato-1.jpg", width: 1600, height: 1116 },
+          { file: "potato-2.jpg", width: 1600, height: 1118 },
+          { file: "potato-3.jpg", width: 1600, height: 1114 },
+        ],
+      },
+      {
+        id: "taro",
+        labelZh: "芋頭",
+        labelEn: "Taro",
+        files: [
+          { file: "taro-1.jpg", width: 1600, height: 1114 },
+          { file: "taro-2.jpg", width: 1600, height: 1111 },
+          { file: "taro-3.jpg", width: 1600, height: 1108 },
+        ],
+      },
+      {
+        id: "tomato",
+        labelZh: "番茄",
+        labelEn: "Tomato",
+        files: [
+          { file: "tomato-1.jpg", width: 1600, height: 1112 },
+          { file: "tomato-2.jpg", width: 1123, height: 1600 },
+          { file: "tomato-3.jpg", width: 1600, height: 1114 },
+        ],
+      },
+      {
+        id: "zucchini",
+        labelZh: "櫛瓜",
+        labelEn: "Zucchini",
+        files: [
+          { file: "zucchini-1.jpg", width: 1600, height: 1126 },
+          { file: "zucchini-2.jpg", width: 1600, height: 1120 },
+          { file: "zucchini-3.jpg", width: 1600, height: 1126 },
+        ],
+      },
     ],
   },
   {
-    id: "brussels_sprout",
-    labelZh: "抱子甘藍",
-    labelEn: "Brussels Sprout",
-    files: [
-      { file: "DSC08581.jpg", width: 1600, height: 899 },
-      { file: "DSC08582.JPG", width: 1600, height: 1117 },
-      { file: "DSC08586.JPG", width: 1600, height: 899 },
-      { file: "DSC08587.JPG", width: 1600, height: 899 },
-      { file: "DSC08588.JPG", width: 1600, height: 1109 },
-      { file: "DSC08589.JPG", width: 1600, height: 899 },
-      { file: "DSC08590.JPG", width: 1600, height: 899 },
-      { file: "DSC08591.JPG", width: 1600, height: 1100 },
-      { file: "DSC08594.JPG", width: 1600, height: 899 },
-    ],
-  },
-  {
-    id: "carrot",
-    labelZh: "紅蘿蔔",
-    labelEn: "Carrot",
-    files: [
-      { file: "DSC08526.JPG", width: 1600, height: 899 },
-      { file: "DSC08527.JPG", width: 1600, height: 1112 },
-      { file: "DSC08528.JPG", width: 1600, height: 899 },
-      { file: "DSC08529.JPG", width: 1600, height: 1110 },
-      { file: "DSC08530.JPG", width: 1600, height: 899 },
-      { file: "DSC08531.JPG", width: 1600, height: 900 },
-      { file: "DSC08532.JPG", width: 1600, height: 899 },
-      { file: "DSC08556.JPG", width: 1600, height: 899 },
-      { file: "carrot_1.JPG", width: 1600, height: 1122 },
-    ],
-  },
-  {
-    id: "egg",
-    labelZh: "雞蛋",
-    labelEn: "Egg",
-    files: [
-      { file: "DSC08533.JPG", width: 1600, height: 899 },
-      { file: "DSC08534.JPG", width: 1600, height: 1113 },
-      { file: "DSC08535.JPG", width: 1600, height: 899 },
-      { file: "DSC08536.JPG", width: 1600, height: 1106 },
-      { file: "DSC08537.JPG", width: 1600, height: 899 },
-      { file: "DSC08538.JPG", width: 1600, height: 1113 },
-      { file: "DSC08539.JPG", width: 1600, height: 899 },
-      { file: "DSC08540.JPG", width: 1600, height: 899 },
-    ],
-  },
-  {
-    id: "grape",
-    labelZh: "葡萄",
-    labelEn: "Grape",
-    files: [
-      { file: "DSC08690.JPG", width: 1600, height: 899 },
-      { file: "DSC08691.JPG", width: 1600, height: 899 },
-      { file: "DSC08692.JPG", width: 1600, height: 899 },
-      { file: "DSC08693.JPG", width: 1600, height: 899 },
-      { file: "DSC08694.JPG", width: 1600, height: 899 },
-      { file: "DSC08695.JPG", width: 1600, height: 899 },
-      { file: "DSC08696.JPG", width: 1600, height: 899 },
-      { file: "DSC08697.JPG", width: 1600, height: 899 },
-    ],
-  },
-  {
-    id: "kiwi",
-    labelZh: "奇異果",
-    labelEn: "Kiwi",
-    files: [
-      { file: "DSC08677.JPG", width: 1600, height: 899 },
-      { file: "DSC08680.JPG", width: 1600, height: 899 },
-      { file: "DSC08681.JPG", width: 1600, height: 899 },
-      { file: "DSC08682.JPG", width: 1600, height: 899 },
-      { file: "DSC08683.JPG", width: 1600, height: 899 },
-      { file: "DSC08684.JPG", width: 1600, height: 899 },
-      { file: "DSC08686.JPG", width: 1600, height: 899 },
-      { file: "DSC08689.JPG", width: 1600, height: 899 },
-    ],
-  },
-  {
-    id: "mangosteen",
-    labelZh: "山竹",
-    labelEn: "Mangosteen",
-    files: [
-      { file: "DSC08698.JPG", width: 1600, height: 899 },
-      { file: "DSC08699.JPG", width: 1600, height: 899 },
-      { file: "DSC08700.JPG", width: 1600, height: 899 },
-      { file: "DSC08701.JPG", width: 1600, height: 899 },
-      { file: "DSC08702.JPG", width: 1600, height: 899 },
-      { file: "DSC08703.JPG", width: 1600, height: 899 },
-      { file: "DSC08705.JPG", width: 1600, height: 899 },
-      { file: "DSC08707.JPG", width: 1600, height: 899 },
-    ],
-  },
-  {
-    id: "mashroom",
-    labelZh: "香菇",
-    labelEn: "Mushroom",
-    files: [
-      { file: "DSC08549.JPG", width: 1600, height: 899 },
-      { file: "DSC08550.JPG", width: 1600, height: 1103 },
-      { file: "DSC08551.JPG", width: 1600, height: 899 },
-      { file: "DSC08552.JPG", width: 1600, height: 1110 },
-      { file: "DSC08554.JPG", width: 1600, height: 899 },
-      { file: "DSC08555.JPG", width: 1600, height: 1113 },
-    ],
-  },
-  {
-    id: "mochi",
-    labelZh: "麻糬",
-    labelEn: "Mochi",
-    files: [
-      { file: "DSC08653.JPG", width: 1600, height: 1127 },
-      { file: "DSC08654.JPG", width: 1600, height: 899 },
-      { file: "DSC08655.JPG", width: 1600, height: 899 },
-      { file: "DSC08656.JPG", width: 1600, height: 1102 },
-      { file: "DSC08657.JPG", width: 1600, height: 899 },
-      { file: "DSC08658.JPG", width: 1600, height: 899 },
-      { file: "DSC08659.JPG", width: 1600, height: 899 },
-      { file: "DSC08660.JPG", width: 1600, height: 1123 },
-      { file: "DSC08661.JPG", width: 1600, height: 899 },
-      { file: "DSC08662.JPG", width: 1600, height: 899 },
-      { file: "DSC08665.JPG", width: 1600, height: 899 },
-    ],
-  },
-  {
-    id: "onion",
-    labelZh: "洋蔥",
-    labelEn: "Onion",
-    files: [
-      { file: "DSC08569.JPG", width: 1600, height: 899 },
-      { file: "DSC08570.JPG", width: 1600, height: 1115 },
-      { file: "DSC08571.JPG", width: 1600, height: 899 },
-      { file: "DSC08572.JPG", width: 1600, height: 899 },
-      { file: "DSC08573.JPG", width: 1600, height: 899 },
-      { file: "DSC08574.JPG", width: 1600, height: 1114 },
-      { file: "DSC08575.JPG", width: 1600, height: 899 },
-      { file: "DSC08576.JPG", width: 1600, height: 899 },
-      { file: "DSC08577.JPG", width: 1600, height: 1119 },
-      { file: "DSC08579.JPG", width: 1600, height: 899 },
-      { file: "DSC08580.JPG", width: 1600, height: 899 },
-    ],
-  },
-  {
-    id: "passion_fruit",
-    labelZh: "百香果",
-    labelEn: "Passion Fruit",
-    files: [
-      { file: "DSC08595.jpg", width: 1600, height: 899 },
-      { file: "DSC08596.JPG", width: 1600, height: 1112 },
-      { file: "DSC08597.jpg", width: 1600, height: 899 },
-      { file: "DSC08598.jpg", width: 1600, height: 899 },
-      { file: "DSC08599.JPG", width: 1600, height: 1108 },
-      { file: "DSC08600.jpg", width: 1600, height: 899 },
-      { file: "DSC08601.jpg", width: 1600, height: 899 },
-      { file: "DSC08602.JPG", width: 1600, height: 1093 },
-      { file: "DSC08603.JPG", width: 1600, height: 899 },
-      { file: "DSC08606.JPG", width: 1600, height: 899 },
-    ],
-  },
-  {
-    id: "potato",
-    labelZh: "馬鈴薯",
-    labelEn: "Potato",
-    files: [
-      { file: "DSC08611.JPG", width: 1600, height: 899 },
-      { file: "DSC08612.JPG", width: 1600, height: 1122 },
-      { file: "DSC08613.JPG", width: 1600, height: 899 },
-      { file: "DSC08614.JPG", width: 1600, height: 1128 },
-      { file: "DSC08615.JPG", width: 1600, height: 899 },
-      { file: "DSC08616.JPG", width: 1600, height: 899 },
-      { file: "DSC08618.JPG", width: 1600, height: 899 },
-      { file: "DSC08619.JPG", width: 1600, height: 899 },
-      { file: "DSC08620.JPG", width: 1600, height: 1123 },
-      { file: "DSC08621.JPG", width: 1600, height: 899 },
-      { file: "DSC08622.JPG", width: 1600, height: 899 },
-      { file: "DSC08624.JPG", width: 1600, height: 899 },
-      { file: "DSC08625.JPG", width: 1600, height: 899 },
-      { file: "DSC08626.JPG", width: 1600, height: 899 },
-    ],
-  },
-  {
-    id: "salmon",
-    labelZh: "鮭魚",
-    labelEn: "Salmon",
-    files: [
-      { file: "DSC08542.JPG", width: 1600, height: 899 },
-      { file: "DSC08543.JPG", width: 1600, height: 1111 },
-      { file: "DSC08544.JPG", width: 1600, height: 899 },
-      { file: "DSC08545.JPG", width: 1600, height: 1113 },
-      { file: "DSC08546.JPG", width: 1600, height: 899 },
-      { file: "DSC08547.JPG", width: 1600, height: 1110 },
-      { file: "DSC08548.JPG", width: 1600, height: 899 },
-    ],
-  },
-  {
-    id: "seasame",
-    labelZh: "芝麻",
-    labelEn: "Sesame",
-    files: [
-      { file: "DSC08641.JPG", width: 1600, height: 1099 },
-      { file: "DSC08642.JPG", width: 1600, height: 899 },
-      { file: "DSC08643.JPG", width: 1600, height: 899 },
-      { file: "DSC08644.JPG", width: 1600, height: 1132 },
-      { file: "DSC08646.JPG", width: 1600, height: 899 },
-      { file: "DSC08647.JPG", width: 1600, height: 899 },
-      { file: "DSC08648.JPG", width: 1600, height: 1138 },
-      { file: "DSC08649.JPG", width: 1600, height: 899 },
-      { file: "DSC08650.JPG", width: 1600, height: 899 },
-      { file: "DSC08651.JPG", width: 1600, height: 899 },
-      { file: "DSC08652.JPG", width: 1600, height: 899 },
-    ],
-  },
-  {
-    id: "taro",
-    labelZh: "芋頭",
-    labelEn: "Taro",
-    files: [
-      { file: "DSC08557.JPG", width: 1600, height: 899 },
-      { file: "DSC08558.JPG", width: 1600, height: 1115 },
-      { file: "DSC08559.JPG", width: 1600, height: 899 },
-      { file: "DSC08560.JPG", width: 1600, height: 899 },
-      { file: "DSC08561.JPG", width: 1600, height: 1101 },
-      { file: "DSC08562.JPG", width: 1600, height: 899 },
-      { file: "DSC08563.JPG", width: 1600, height: 899 },
-      { file: "DSC08564.JPG", width: 1600, height: 1104 },
-      { file: "DSC08567.JPG", width: 1600, height: 899 },
-    ],
-  },
-  {
-    id: "tomato",
-    labelZh: "番茄",
-    labelEn: "Tomato",
-    files: [
-      { file: "DSC08708.JPG", width: 1600, height: 899 },
-      { file: "DSC08709.JPG", width: 1600, height: 899 },
-      { file: "DSC08710.JPG", width: 1600, height: 899 },
-      { file: "DSC08711.JPG", width: 1600, height: 899 },
-      { file: "DSC08712.JPG", width: 1600, height: 899 },
-      { file: "DSC08713.JPG", width: 1600, height: 899 },
-      { file: "DSC08714.JPG", width: 1600, height: 899 },
-      { file: "DSC08715.JPG", width: 1600, height: 899 },
+    id: "other",
+    labelZh: "其他",
+    labelEn: "Other",
+    items: [
+      {
+        id: "black-sesame",
+        labelZh: "黑芝麻",
+        labelEn: "Black Sesame",
+        files: [
+          { file: "black-sesame-1.jpg", width: 1600, height: 1111 },
+          { file: "black-sesame-2.jpg", width: 1600, height: 1118 },
+        ],
+      },
+      {
+        id: "crime-scene",
+        labelZh: "飯醉現場",
+        labelEn: "Crime Scene",
+        files: [
+          { file: "crime-scene.jpg", width: 1114, height: 1600 },
+        ],
+      },
+      {
+        id: "double-the-pumpkin",
+        labelZh: "南上加南",
+        labelEn: "Double the Pumpkin",
+        files: [
+          { file: "double-the-pumpkin.jpg", width: 1122, height: 1600 },
+        ],
+      },
+      {
+        id: "egg",
+        labelZh: "雞蛋",
+        labelEn: "Egg",
+        files: [
+          { file: "egg-1.jpg", width: 1600, height: 1114 },
+          { file: "egg-2.jpg", width: 1600, height: 1116 },
+          { file: "egg-3.jpg", width: 1600, height: 1114 },
+        ],
+      },
+      {
+        id: "mochi",
+        labelZh: "麻糬",
+        labelEn: "Mochi",
+        files: [
+          { file: "mochi-1.jpg", width: 1600, height: 1119 },
+          { file: "mochi-2.jpg", width: 1600, height: 1115 },
+        ],
+      },
+      {
+        id: "moon-festival",
+        labelZh: "中秋",
+        labelEn: "Moon Festival",
+        files: [
+          { file: "moon-festival-1.jpg", width: 1600, height: 1114 },
+          { file: "moon-festival-2.jpg", width: 1600, height: 1116 },
+        ],
+      },
+      {
+        id: "salmon",
+        labelZh: "鮭魚",
+        labelEn: "Salmon",
+        files: [
+          { file: "salmon-1.jpg", width: 1600, height: 1113 },
+          { file: "salmon-2.jpg", width: 1600, height: 1116 },
+          { file: "salmon-3.jpg", width: 1600, height: 1118 },
+        ],
+      },
     ],
   },
 ];

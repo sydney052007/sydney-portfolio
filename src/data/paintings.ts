@@ -70,8 +70,8 @@ export const paintingMediums: PaintingMedium[] = [
     works: [
     { file: "nined-tail_fox.jpg", titleZh: "九尾狐的盛宴", titleEn: "The Nine-Tailed Fox's Feast", width: 1600, height: 1137, mediaNote: "麥克筆" },
     { file: "pearl_sea_tea.jpg", titleZh: "海洋珍珠", titleEn: "Ocean Pearl", width: 1600, height: 1234, mediaNote: "麥克筆" },
-    { file: "color_hand.jpg", titleZh: "色彩之手", titleEn: "Hands of Color", width: 1081, height: 1600, mediaNote: "複合媒材" },
-    { file: "plural_marriage.jpg", titleZh: "疫線紅繩", titleEn: "Bound Apart", width: 794, height: 1600, mediaNote: "複合媒材" },
+    { file: "color_hand.jpg", titleZh: "色彩之手", titleEn: "Hands of Color", width: 1081, height: 1600, mediaNote: "水墨加水彩" },
+    { file: "plural_marriage.jpg", titleZh: "疫線紅繩", titleEn: "Bound Apart", width: 794, height: 1600, mediaNote: "水墨筆畫" },
     { file: "newyear_horse.jpg", titleZh: "木馬慶典", titleEn: "Carousel Festival", width: 1146, height: 1600, mediaNote: "原子筆" },
     { file: "person1.jpg", titleZh: "明暗之間", titleEn: "Between Light and Dark", width: 1526, height: 1600, mediaNote: "壓克力顏料，畫在絲布上" },
     ],

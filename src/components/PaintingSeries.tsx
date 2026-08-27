@@ -1,13 +1,10 @@
-import Image from "next/image";
+import ArtworkImage from "@/components/ArtworkImage";
+import CollapsibleSection from "@/components/CollapsibleSection";
 import { solarTermsSeries } from "@/data/paintings";
 
 export default function PaintingSeries() {
   return (
-    <div>
-      <div className="flex items-baseline gap-2.5">
-        <span className="font-serif text-sm italic text-accent">系列作品</span>
-        <span className="h-px flex-1 bg-border" aria-hidden="true" />
-      </div>
+    <CollapsibleSection titleZh="系列作品">
       <p className="mt-2 text-sm text-muted">
         廿四節氣 / The Twenty-Four Solar Terms
       </p>
@@ -15,7 +12,7 @@ export default function PaintingSeries() {
       <div className="mt-4 grid grid-cols-3 items-start gap-4 sm:grid-cols-6">
         {solarTermsSeries.map((item) => (
           <div key={item.file}>
-            <Image
+            <ArtworkImage
               src={`/images/interests/painting/series/${item.file}`}
               alt={item.titleZh}
               width={item.width}
@@ -29,6 +26,6 @@ export default function PaintingSeries() {
           </div>
         ))}
       </div>
-    </div>
+    </CollapsibleSection>
   );
 }

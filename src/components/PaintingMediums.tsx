@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import ArtworkImage from "@/components/ArtworkImage";
+import CollapsibleSection from "@/components/CollapsibleSection";
 import { paintingMediums } from "@/data/paintings";
 
 export default function PaintingMediums() {
@@ -9,12 +10,7 @@ export default function PaintingMediums() {
   const medium = paintingMediums.find((m) => m.id === activeId)!;
 
   return (
-    <div>
-      <div className="flex items-baseline gap-2.5">
-        <span className="font-serif text-sm italic text-accent">媒材作品集</span>
-        <span className="h-px flex-1 bg-border" aria-hidden="true" />
-      </div>
-
+    <CollapsibleSection titleZh="媒材作品集">
       <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
         {paintingMediums.map((m) => (
           <button
@@ -39,7 +35,7 @@ export default function PaintingMediums() {
       >
         {medium.works.map((work) => (
           <div key={work.file}>
-            <Image
+            <ArtworkImage
               src={`/images/interests/painting/${medium.folder}/${work.file}`}
               alt={work.titleZh}
               width={work.width}
@@ -56,6 +52,6 @@ export default function PaintingMediums() {
           </div>
         ))}
       </div>
-    </div>
+    </CollapsibleSection>
   );
 }
