@@ -35,19 +35,18 @@ export default function PaintingMediums() {
 
       <div
         key={medium.id}
-        className="page-fade-in mt-6 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3"
+        className="page-fade-in mt-6 grid grid-cols-2 items-start gap-x-6 gap-y-8 sm:grid-cols-3"
       >
         {medium.works.map((work) => (
           <div key={work.file}>
-            <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-foreground/5">
-              <Image
-                src={`/images/interests/painting/${medium.folder}/${work.file}`}
-                alt={work.titleZh}
-                fill
-                sizes="(min-width: 640px) 30vw, 45vw"
-                className="object-cover"
-              />
-            </div>
+            <Image
+              src={`/images/interests/painting/${medium.folder}/${work.file}`}
+              alt={work.titleZh}
+              width={work.width}
+              height={work.height}
+              sizes="(min-width: 640px) 30vw, 45vw"
+              className="h-auto w-full rounded-lg"
+            />
             <p className="mt-2 text-sm text-foreground/80">
               {work.titleZh} <span className="text-muted">{work.titleEn}</span>
             </p>

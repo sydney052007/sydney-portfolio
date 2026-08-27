@@ -12,18 +12,17 @@ export default function PaintingSeries() {
         廿四節氣 / The Twenty-Four Solar Terms
       </p>
 
-      <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-6">
+      <div className="mt-4 grid grid-cols-3 items-start gap-4 sm:grid-cols-6">
         {solarTermsSeries.map((item) => (
           <div key={item.file}>
-            <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-foreground/5">
-              <Image
-                src={`/images/interests/painting/series/${item.file}`}
-                alt={item.titleZh}
-                fill
-                sizes="(min-width: 640px) 16vw, 33vw"
-                className="object-cover"
-              />
-            </div>
+            <Image
+              src={`/images/interests/painting/series/${item.file}`}
+              alt={item.titleZh}
+              width={item.width}
+              height={item.height}
+              sizes="(min-width: 640px) 16vw, 33vw"
+              className="h-auto w-full rounded-lg"
+            />
             <p className="mt-1.5 text-xs text-foreground/75">
               {item.titleZh} <span className="text-muted">{item.titleEn}</span>
             </p>

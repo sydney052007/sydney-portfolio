@@ -62,7 +62,7 @@ public/images/interests/painting/
   other/               # 其他媒材 6 張
   practice/             # 17 個食材子資料夾，每個底下是該食材的所有練習照片，保留原始 DSC 檔名
 ```
-所有作品圖片都用 `next/image`（`fill` + 對應 `sizes`），交給 Next.js／Vercel 的圖片優化管線做延遲載入與依裝置的動態縮圖。
+所有作品圖片都用 `next/image` 交給 Next.js／Vercel 的圖片優化管線做延遲載入與依裝置的動態縮圖。**注意：一開始用 `fill` + 固定 `aspect-square`／`aspect-[3/4]` 容器 + `object-cover`，會把非該比例的作品裁掉一部分，2026-08-27 已改成用 `sharp` 讀出每張圖的實際 `width`/`height` 寫進 `Painting`/`PracticeFile` 型別，`<Image>` 直接用這組實際尺寸（搭配 `className="h-auto w-full"` 依容器寬度等比縮放），畫廊網格才不會裁到作品內容。之後新增畫作時，記得也要用同樣方式讀出實際尺寸填進資料檔，不要憑感覺填一個尺寸或沿用其他作品的數字。**
 
 ### 第五輪：首頁三分頁預告 + 全站清單樣式定案
 
@@ -149,8 +149,8 @@ src/
   data/
     profile.ts                                   # 個人資料：姓名、系級、求職狀態（badge/detail）、自我介紹、技能、聯絡方式
     media.ts                                       # /interests 頁的織品手作資料（型別 MediaItem：name/images?）+ 音樂文字常數 + 織品手作開場白
-    paintings.ts                                    # 繪畫「系列作品」（solarTermsSeries）與「媒材作品集」（paintingMediums，型別 PaintingMedium：id/labelZh/labelEn/folder/works，works 是 Painting[]：file/titleZh/titleEn/mediaNote?）
-    paintingPractice.ts                              # 繪畫「色鉛筆練習」17 個食材子分頁（型別 PracticeSet：id/labelZh/labelEn/files，files 是實際檔名陣列）
+    paintings.ts                                    # 繪畫「系列作品」（solarTermsSeries）與「媒材作品集」（paintingMediums，型別 PaintingMedium：id/labelZh/labelEn/folder/works，works 是 Painting[]：file/titleZh/titleEn/width/height/mediaNote?）
+    paintingPractice.ts                              # 繪畫「色鉛筆練習」17 個食材子分頁（型別 PracticeSet：id/labelZh/labelEn/files，files 是 PracticeFile[]：file/width/height）
     recipes.ts                                      # 烘焙食譜清單（型別 Recipe：name/image/description/meta）
     projects.ts                                      # 主要專案清單（型別 Project：name/description/tech/github/demo?/livePreview?/statusLabel?）
     experiences.ts                                    # 更多經歷清單（型別 Experience：title/description/tags/links[]/embeds?）
@@ -165,8 +165,8 @@ src/
 - 修改自我介紹、求職狀態、技能標籤、聯絡方式 → 改 `src/data/profile.ts`
 - 修改首頁最下方三頁預告文字 → 改 `src/components/PagePreviews.tsx` 裡的 `previews` 陣列
 - 修改 `/interests` 頁的織品手作項目或音樂文字 → 改 `src/data/media.ts`；補照片時把檔案放進 `public/images/interests/` 並在對應 `MediaItem` 的 `images` 陣列加上路徑
-- 新增／移除／修改繪畫「系列作品」或「媒材作品集」→ 改 `src/data/paintings.ts`；照片放進 `public/images/interests/painting/series/` 或 `public/images/interests/painting/<medium-folder>/`，建議先用 `sharp` 之類的工具壓縮（resize 到最長邊 1600px、JPEG quality 80 左右），原始照片常常單張 2-4MB
-- 新增／移除／修改繪畫「色鉛筆練習」子分頁 → 改 `src/data/paintingPractice.ts`，照片放進 `public/images/interests/painting/practice/<id>/`，`files` 陣列要跟資料夾裡實際存在的檔名完全一致（不要用猜的），新增子分頁前先用 `ls` 之類的指令列出實際檔名清單再寫進資料檔
+- 新增／移除／修改繪畫「系列作品」或「媒材作品集」→ 改 `src/data/paintings.ts`；照片放進 `public/images/interests/painting/series/` 或 `public/images/interests/painting/<medium-folder>/`，建議先用 `sharp` 之類的工具壓縮（resize 到最長邊 1600px、JPEG quality 80 左右），原始照片常常單張 2-4MB。**每筆一定要填實際的 `width`/`height`**（例如 `sharp(file).metadata()` 讀出來的值），不要憑感覺填或沿用別張的數字，不然畫廊網格會裁到或壓扁作品
+- 新增／移除／修改繪畫「色鉛筆練習」子分頁 → 改 `src/data/paintingPractice.ts`，照片放進 `public/images/interests/painting/practice/<id>/`，`files` 陣列（`PracticeFile[]`：`file`/`width`/`height`）要跟資料夾裡實際存在的檔名完全一致（不要用猜的），`width`/`height` 也要是實際讀出來的尺寸；新增子分頁前先用 `ls` 之類的指令列出實際檔名清單、用 `sharp` 讀出每張的實際尺寸，再寫進資料檔
 - 新增／移除／修改烘焙食譜 → 改 `src/data/recipes.ts`，照片放進 `public/images/interests/baking/`（建議先壓縮過再放，原始手機照片單張常常 2-4MB）
 - 新增／移除／修改主要作品集卡片 → 改 `src/data/projects.ts`（`livePreview: true` 會變成大圖即時預覽卡片並佔兩欄，記得先照本文件「iframe 嵌入測試結果」的方法實測過該 demo 能不能穩定嵌入再設定；沒有 `livePreview` 就是純文字條列卡片；沒有 demo 連結時不要填 `demo` 欄位）
 - 新增／移除／修改更多經歷卡片 → 改 `src/data/experiences.ts`（`links` 陣列可以放 1 個到多個連結；`embeds` 陣列可以放 p5.js 或 YouTube 嵌入，型別是 `{ kind: "p5"; url; nativeWidth; nativeHeight; displayWidth? }` 或 `{ kind: "youtube"; videoId }`。p5.js 的 `nativeWidth`/`nativeHeight` 要填該 sketch `createCanvas()` 的實際尺寸，不然畫面會被裁切，見上方 iframe 測試結果表格的說明；不確定能不能嵌入的來源建議先用本文件「iframe 嵌入測試結果」的方法實測再加）

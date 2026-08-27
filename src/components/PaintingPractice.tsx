@@ -38,21 +38,18 @@ export default function PaintingPractice() {
 
       <div
         key={set.id}
-        className="page-fade-in mt-6 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5"
+        className="page-fade-in mt-6 grid grid-cols-3 items-start gap-3 sm:grid-cols-4 md:grid-cols-5"
       >
-        {set.files.map((file) => (
-          <div
-            key={file}
-            className="relative aspect-square overflow-hidden rounded-lg bg-foreground/5"
-          >
-            <Image
-              src={`/images/interests/painting/practice/${set.id}/${file}`}
-              alt={`${set.labelZh} practice`}
-              fill
-              sizes="(min-width: 768px) 20vw, 33vw"
-              className="object-cover"
-            />
-          </div>
+        {set.files.map((f) => (
+          <Image
+            key={f.file}
+            src={`/images/interests/painting/practice/${set.id}/${f.file}`}
+            alt={`${set.labelZh} practice`}
+            width={f.width}
+            height={f.height}
+            sizes="(min-width: 768px) 20vw, 33vw"
+            className="h-auto w-full rounded-lg"
+          />
         ))}
       </div>
     </div>
