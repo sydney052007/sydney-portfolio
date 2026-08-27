@@ -1,10 +1,13 @@
-import { paintingMedia } from "@/data/media";
-import MediaList from "@/components/MediaList";
+import PaintingSeries from "@/components/PaintingSeries";
+import PaintingMediums from "@/components/PaintingMediums";
+import PaintingPractice from "@/components/PaintingPractice";
 
 export default function PaintingPanel() {
   return (
-    <div className="max-w-xl">
-      <MediaList items={paintingMedia} />
+    <div className="space-y-12">
+      <PaintingSeries />
+      <PaintingMediums />
+      <PaintingPractice />
     </div>
   );
 }

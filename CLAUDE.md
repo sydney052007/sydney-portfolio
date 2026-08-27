@@ -42,6 +42,27 @@
 - [x] 新增 `/interests` 興趣頁（4 個分類切換 + 烘焙食譜清單/展開互動），Navbar 加上「興趣」連結
 - [x] `/interests` 頁視覺改成跟 `/projects` 一致的無邊框分隔線風格（4 分類方塊、媒材清單、食譜展開框）
 - [x] 首頁最下方從完整興趣區塊改成「作品集／更多經歷／興趣」三頁預告，套用全站統一的清單樣式；刪除不再使用的 `Interests.tsx`、`data/interests.ts`
+- [x] `/interests` 頁「繪畫」區塊填入實際作品（廿四節氣系列、水彩/油畫/色鉛筆/其他四個媒材分頁、17 個食材色鉛筆練習子分頁），共 178 張照片
+
+### 第六輪：`/interests` 繪畫區塊實際內容
+
+「繪畫」小區塊底下是三層不同性質的內容，各自獨立元件：
+
+1. **系列作品**：`src/components/PaintingSeries.tsx`（server component，靜態），廿四節氣 6 張色鉛筆+水彩系列作品，一次全部顯示，不需要點擊切換，資料在 `src/data/paintings.ts` 的 `solarTermsSeries`。
+2. **媒材作品集**：`src/components/PaintingMediums.tsx`（"use client"），水彩／油畫／色鉛筆／其他四個媒材分頁（只放「目前有作品」的媒材，素描目前是空的所以沒有這個分頁），分頁用底線＋強調色標示目前選中，跟上層 `InterestsExplorer` 的頂層分類分頁（用 `border-t` 頂線）刻意做出視覺層級差異（用 `border-b`），讓使用者感覺到這是「分類底下的子分類」。資料在 `src/data/paintings.ts` 的 `paintingMediums`，「其他」媒材的每件作品多一個 `mediaNote` 欄位標注實際媒材（麥克筆／複合媒材／原子筆／壓克力顏料）。
+3. **色鉛筆練習 / Small Practice**：`src/components/PaintingPractice.tsx`（"use client"），跟「系列作品」「媒材作品集」平行並列的第三個獨立層次，不是色鉛筆媒材分頁底下的子項。17 個食材子分頁（洋薊、蘆筍……番茄），每個子分頁點開後用網格顯示該食材的**所有**練習照片（不挑選、不裁切張數），資料在 `src/data/paintingPractice.ts` 的 `paintingPractice`（每筆是 `{ id, labelZh, labelEn, files: string[] }`，`files` 是實際讀取來源資料夾後得到的檔名陣列，不是憑空編的）。
+
+**圖片處理**：原始照片來自 Sydney 電腦上 `畫畫/` 資料夾（水彩、油畫、色鉛筆、原子筆、複合媒材、麥克筆等分類），總共 178 張、100.6MB，用 `sharp` 統一 resize 到最長邊 1600px、JPEG quality 80（mozjpeg）壓縮到 17MB 才放進 `public/images/interests/painting/`，跟烘焙食譜照片的處理方式一致。子資料夾結構：
+```
+public/images/interests/painting/
+  series/          # 廿四節氣 6 張，重新命名成英文檔名（start-of-spring.jpg 等）
+  watercolor/       # 水彩 9 張，保留原始檔名
+  oil/               # 油畫 2 張
+  colored-pencil/     # 色鉛筆 1 張（alices-dream.jpg，原始檔名含空白已重新命名）
+  other/               # 其他媒材 6 張
+  practice/             # 17 個食材子資料夾，每個底下是該食材的所有練習照片，保留原始 DSC 檔名
+```
+所有作品圖片都用 `next/image`（`fill` + 對應 `sizes`），交給 Next.js／Vercel 的圖片優化管線做延遲載入與依裝置的動態縮圖。
 
 ### 第五輪：首頁三分頁預告 + 全站清單樣式定案
 
@@ -50,7 +71,7 @@
 ### 第四輪：`/interests` 興趣頁
 
 1. **頁面架構**：`src/app/interests/page.tsx`（頁首 + 開場白）+ `src/components/InterestsExplorer.tsx`（"use client"，管理目前選中的分類 `painting`/`music`/`textile`/`baking`，4 個分類方塊桌機一列、手機 `grid-cols-2` 排成 2x2，選中的分類方塊用強調色標示，下方內容面板用 `page-fade-in`（沿用 `template.tsx` 的同一個 CSS keyframe）在切換分類時重新觸發淡入）。
-2. **繪畫／織品手作**：共用 `src/components/MediaList.tsx` 渲染純文字清單，資料在 `src/data/media.ts`（`MediaItem = { name; images?: string[] }`），沒有巢狀點擊互動，`images` 欄位預留但目前皆為空。
+2. **繪畫／織品手作**：一開始都只是共用 `src/components/MediaList.tsx` 渲染的純文字佔位清單。**繪畫已在第六輪填入實際內容（見下方第六輪章節），不再是純文字清單。**織品手作維持原樣：`MediaList.tsx` 渲染純文字清單，資料在 `src/data/media.ts`（`MediaItem = { name; images?: string[] }`），沒有巢狀點擊互動，`images` 欄位預留但目前皆為空。
 3. **音樂**：`src/components/MusicPanel.tsx`，純文字，沒有資料結構可言，就是一個字串常數。
 4. **烘焙**：`src/components/BakingPanel.tsx`（"use client"，自己管理選中的食譜），縮圖清單用 `next/image`（本地檔案，非任意來源，適合用 `next/image` 做壓縮/優化），資料在 `src/data/recipes.ts`（`Recipe = { name; image; description; meta }`，`meta` 是「份量／總時間」那行小字，跟主要敘述文字分開排版）。5 張食譜照片存在 `public/images/interests/baking/`，原始檔案單張 2.4~4.4MB（手機直出未壓縮），**沒有事先壓縮**，靠 Next.js／Vercel 的 `next/image` 優化管線在請求時動態產生縮圖，不影響網站呈現，但 git repo 本身會多背 ~18MB 的原始檔案體積，之後如果要精簡 repo 大小可以考慮換成先壓縮過的版本。
 
@@ -90,7 +111,9 @@
 - Attendance System 的 live 預覽不穩定（見上表），目前用純文字卡片 + 正常可用的 demo 連結。如果之後 Sydney 修好那個站台自己的第三方 iframe 相容性問題，可以把 `src/data/projects.ts` 裡 Attendance System 那筆加上 `livePreview: true` 改回大圖即時預覽卡片。
 - 自我介紹（`profile.bio`）已在 2026-08-22 更新為新版本（藝術背景 + 走向程式的心路歷程，共 7 段），標點符號統一為全形。之後如果還要再改，直接改 `src/data/profile.ts` 的 `bio` 陣列即可。
 - 目前沒有放 LinkedIn 或其他社群連結（尚未提供），之後有的話可以加進 `src/data/profile.ts` 的 `contact` 物件，並在 `About.tsx` / `Footer.tsx` 加上對應連結。
-- `/interests` 頁面的繪畫、織品手作目前都沒有照片，`src/data/media.ts` 裡每個 `MediaItem` 已預留 `images?: string[]`，之後補照片把檔案放進 `public/images/interests/` 並在對應項目填上路徑陣列即可，不用改元件邏輯。
+- `/interests` 頁面的織品手作目前還沒有照片（繪畫已經在第六輪補上實際內容），`src/data/media.ts` 裡每個 `MediaItem` 已預留 `images?: string[]`，之後補照片把檔案放進 `public/images/interests/` 並在對應項目填上路徑陣列即可，不用改元件邏輯。
+- 繪畫的「其他」媒材分頁目前有 6 件作品；如果之後想幫「素描」補上作品，要在 `src/data/paintings.ts` 的 `paintingMediums` 陣列新增一個 `{ id: "sketch", labelZh: "素描", labelEn: "Sketch", folder: "sketch", works: [...] }` 物件，並把照片放進 `public/images/interests/painting/sketch/`，元件會自動抓到新分頁，不用改 `PaintingMediums.tsx`。
+- 色鉛筆練習（17 個食材子分頁）目前是固定清單；之後要新增/移除某個食材子分頁，改 `src/data/paintingPractice.ts` 對應項目，`files` 陣列要填實際存在於 `public/images/interests/painting/practice/<id>/` 的檔名，不要憑空編。
 - 烘焙食譜清單預期維持 5-6 則、汰換不無限增加，之後要換掉某一則時直接改 `src/data/recipes.ts` 對應物件（換照片記得同時把新檔案放進 `public/images/interests/baking/`）。
 - Attendance System、Mos Sales App 標示為「2026/7 ~ 2026/8」（已結束），之後有重大進展或想拿掉時間標示時，記得更新 `statusLabel` 或直接移除該欄位。
 
@@ -111,8 +134,12 @@ src/
     About.tsx                         # 首頁自我介紹：姓名（serif）、系級、求職狀態 badge、bio（左側裝飾線）、技能標籤、聯絡方式
     PagePreviews.tsx                    # 首頁最下方三頁預告（作品集/更多經歷/興趣），套用 /projects 基準樣式
     InterestsExplorer.tsx               # "use client"，/interests 頁的 4 分類切換 tab + 內容面板容器
-    PaintingPanel.tsx / TextilePanel.tsx  # 繪畫／織品手作內容面板，都是 MediaList 包一層文字說明
-    MediaList.tsx                          # 繪畫/織品手作共用的純文字清單元件，讀 data/media.ts，images? 預留擴充
+    PaintingPanel.tsx                     # 繪畫內容面板：組合 PaintingSeries + PaintingMediums + PaintingPractice 三層
+    PaintingSeries.tsx                     # 繪畫「系列作品」：廿四節氣 6 張，靜態全部顯示，讀 data/paintings.ts 的 solarTermsSeries
+    PaintingMediums.tsx                     # 繪畫「媒材作品集」："use client"，水彩/油畫/色鉛筆/其他分頁切換，讀 data/paintings.ts 的 paintingMediums
+    PaintingPractice.tsx                     # 繪畫「色鉛筆練習」："use client"，17 個食材子分頁切換，讀 data/paintingPractice.ts
+    TextilePanel.tsx                          # 織品手作內容面板，MediaList 包一層文字說明（目前仍是純文字佔位）
+    MediaList.tsx                              # 織品手作用的純文字清單元件，讀 data/media.ts，images? 預留擴充
     MusicPanel.tsx                          # 音樂內容面板，純文字，無資料檔
     BakingPanel.tsx                          # "use client"，烘焙縮圖清單 + 點擊展開食譜文字，讀 data/recipes.ts
     ProjectCard.tsx                           # 作品集卡片，依 project.livePreview 切換「大圖 live iframe 預覽卡片」/「純文字條列」兩種樣式
@@ -121,7 +148,9 @@ src/
     Footer.tsx                                   # 版權資訊 + Email/GitHub 連結
   data/
     profile.ts                                   # 個人資料：姓名、系級、求職狀態（badge/detail）、自我介紹、技能、聯絡方式
-    media.ts                                       # /interests 頁的繪畫/織品手作資料（型別 MediaItem：name/images?）+ 音樂文字常數 + 織品手作開場白
+    media.ts                                       # /interests 頁的織品手作資料（型別 MediaItem：name/images?）+ 音樂文字常數 + 織品手作開場白
+    paintings.ts                                    # 繪畫「系列作品」（solarTermsSeries）與「媒材作品集」（paintingMediums，型別 PaintingMedium：id/labelZh/labelEn/folder/works，works 是 Painting[]：file/titleZh/titleEn/mediaNote?）
+    paintingPractice.ts                              # 繪畫「色鉛筆練習」17 個食材子分頁（型別 PracticeSet：id/labelZh/labelEn/files，files 是實際檔名陣列）
     recipes.ts                                      # 烘焙食譜清單（型別 Recipe：name/image/description/meta）
     projects.ts                                      # 主要專案清單（型別 Project：name/description/tech/github/demo?/livePreview?/statusLabel?）
     experiences.ts                                    # 更多經歷清單（型別 Experience：title/description/tags/links[]/embeds?）
@@ -135,7 +164,9 @@ src/
 
 - 修改自我介紹、求職狀態、技能標籤、聯絡方式 → 改 `src/data/profile.ts`
 - 修改首頁最下方三頁預告文字 → 改 `src/components/PagePreviews.tsx` 裡的 `previews` 陣列
-- 修改 `/interests` 頁的繪畫／織品手作項目或音樂文字 → 改 `src/data/media.ts`；補照片時把檔案放進 `public/images/interests/` 並在對應 `MediaItem` 的 `images` 陣列加上路徑
+- 修改 `/interests` 頁的織品手作項目或音樂文字 → 改 `src/data/media.ts`；補照片時把檔案放進 `public/images/interests/` 並在對應 `MediaItem` 的 `images` 陣列加上路徑
+- 新增／移除／修改繪畫「系列作品」或「媒材作品集」→ 改 `src/data/paintings.ts`；照片放進 `public/images/interests/painting/series/` 或 `public/images/interests/painting/<medium-folder>/`，建議先用 `sharp` 之類的工具壓縮（resize 到最長邊 1600px、JPEG quality 80 左右），原始照片常常單張 2-4MB
+- 新增／移除／修改繪畫「色鉛筆練習」子分頁 → 改 `src/data/paintingPractice.ts`，照片放進 `public/images/interests/painting/practice/<id>/`，`files` 陣列要跟資料夾裡實際存在的檔名完全一致（不要用猜的），新增子分頁前先用 `ls` 之類的指令列出實際檔名清單再寫進資料檔
 - 新增／移除／修改烘焙食譜 → 改 `src/data/recipes.ts`，照片放進 `public/images/interests/baking/`（建議先壓縮過再放，原始手機照片單張常常 2-4MB）
 - 新增／移除／修改主要作品集卡片 → 改 `src/data/projects.ts`（`livePreview: true` 會變成大圖即時預覽卡片並佔兩欄，記得先照本文件「iframe 嵌入測試結果」的方法實測過該 demo 能不能穩定嵌入再設定；沒有 `livePreview` 就是純文字條列卡片；沒有 demo 連結時不要填 `demo` 欄位）
 - 新增／移除／修改更多經歷卡片 → 改 `src/data/experiences.ts`（`links` 陣列可以放 1 個到多個連結；`embeds` 陣列可以放 p5.js 或 YouTube 嵌入，型別是 `{ kind: "p5"; url; nativeWidth; nativeHeight; displayWidth? }` 或 `{ kind: "youtube"; videoId }`。p5.js 的 `nativeWidth`/`nativeHeight` 要填該 sketch `createCanvas()` 的實際尺寸，不然畫面會被裁切，見上方 iframe 測試結果表格的說明；不確定能不能嵌入的來源建議先用本文件「iframe 嵌入測試結果」的方法實測再加）
