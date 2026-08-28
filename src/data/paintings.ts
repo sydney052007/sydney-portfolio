@@ -5,6 +5,10 @@ export type Painting = {
   width: number;
   height: number;
   mediaNote?: string;
+  // Override the automatic landscape/portrait grouping in PaintingMediums
+  // (width > height) for pieces close to square that should sit in a
+  // specific row regardless of their exact aspect ratio.
+  layoutGroup?: "landscape" | "portrait";
 };
 
 // public/images/interests/painting/series/
@@ -73,7 +77,7 @@ export const paintingMediums: PaintingMedium[] = [
     { file: "color_hand.jpg", titleZh: "色彩之手", titleEn: "Hands of Color", width: 1081, height: 1600, mediaNote: "水墨加水彩" },
     { file: "plural_marriage.jpg", titleZh: "疫線紅繩", titleEn: "Bound Apart", width: 794, height: 1600, mediaNote: "水墨筆畫" },
     { file: "newyear_horse.jpg", titleZh: "木馬慶典", titleEn: "Carousel Festival", width: 1146, height: 1600, mediaNote: "原子筆" },
-    { file: "person1.jpg", titleZh: "明暗之間", titleEn: "Between Light and Dark", width: 1526, height: 1600, mediaNote: "壓克力顏料，畫在絲布上" },
+    { file: "person1.jpg", titleZh: "明暗之間", titleEn: "Between Light and Dark", width: 1526, height: 1600, mediaNote: "壓克力顏料，畫在絲布上", layoutGroup: "landscape" },
     ],
   },
 ];

@@ -201,7 +201,7 @@ export const paintingPractice: PracticeCategory[] = [
         labelZh: "南上加南",
         labelEn: "Double the Pumpkin",
         files: [
-          { file: "double-the-pumpkin.jpg", width: 1092, height: 1600 },
+          { file: "double-the-pumpkin.jpg", width: 1112, height: 1600 },
         ],
       },
       {
