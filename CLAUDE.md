@@ -43,6 +43,25 @@
 - [x] `/interests` 頁視覺改成跟 `/projects` 一致的無邊框分隔線風格（4 分類方塊、媒材清單、食譜展開框）
 - [x] 首頁最下方從完整興趣區塊改成「作品集／更多經歷／興趣」三頁預告，套用全站統一的清單樣式；刪除不再使用的 `Interests.tsx`、`data/interests.ts`
 - [x] `/interests` 頁「繪畫」區塊填入實際作品（廿四節氣系列、水彩/油畫/色鉛筆/其他四個媒材分頁、17 個食材色鉛筆練習子分頁），共 178 張照片
+- [x] 繪畫「系列作品／媒材作品集／色鉛筆練習」三大區塊改成可收合（`CollapsibleSection.tsx`）；媒材作品集依照片橫向/直向自動分排（`layoutGroup` 可手動覆寫近正方形的作品）；新增全站共用的 `ArtworkImage.tsx`（點擊放大燈箱 + 防右鍵/拖曳存檔），套用到繪畫與織品手作的所有照片
+- [x] 色鉛筆練習從「17 個食材扁平分頁」改版成「水果／蔬菜／其他三分類 → 21 個品項」，照片來源整批換成 Sydney 重新掃描/上傳的 PDF 檔，**直接用原圖只做轉檔＋壓縮，不加任何顏色／亮度調整**（這是 Sydney 明確要求的最終決定，過程中曾嘗試多種白平衡／亮度校正技術，細節與原因見下方第七輪）
+- [x] `/interests` 頁「織品手作」區塊填入 7 件實際作品（背心／手套／手套收納袋／毯子／網袋），改成清單式呈現（標題＋小介紹＋照片），刪除舊的純文字佔位 `MediaList.tsx`／`MediaItem` 型別
+
+### 第七輪：色鉛筆練習改版、織品手作實際內容、繪畫版面優化
+
+**1. 色鉛筆練習大改版（水果／蔬菜／其他）**
+
+原本的「17 個食材扁平分頁」拆掉，改成兩層結構：`src/data/paintingPractice.ts` 的 `PracticeCategory[]`（水果/蔬菜/其他）→ 每個底下是 `PracticeItem[]`（21 個品項，中文名稱對照表見程式碼註解，含兩個諧音哏標題「飯醉現場」「南上加南」）→ 每個品項是 `PracticeFile[]`（該品項的所有照片）。`PaintingPractice.tsx` 對應改成分類頁籤（水果/蔬菜/其他）+ 頁籤下依品項分組顯示全部照片；只有 1 張照片的品項（飯醉現場、南上加南）會自動被歸進同一排（`groupPracticeItems()` 抓連續的單張品項分組，不是寫死這兩個名字），照片格線固定 `grid-cols-3`（不隨裝置寬度變 4/5 欄，讓照片跟著螢幕寬度等比放大）。資料夾結構：`public/images/interests/painting/practice/<category-id>/<item-id>/<file>`。
+
+**2. 這批練習照片的色彩處理，最後定案是「完全不調整」**：Sydney 一開始提供的照片背景偏藍冷色，過程中依序試過（a）單一全域白平衡校正、（b）依整張照片模糊出的光照分佈圖做逐像素校正（能同時修掉不均勻的陰影/色偏，效果實測最好），但 Sydney 最終看過後決定**不要做任何調整，直接用原圖只轉檔＋壓縮**（長邊 1600px、JPEG quality 80 mozjpeg）。**之後如果又想幫這批照片調色，要先跟 Sydney 確認，不要自作主張套用校正**——這是他明確驗證比較過後的決定，不是還沒處理好。南上加南（`double-the-pumpkin.jpg`）後來換成 Sydney 提供的另一張背景乾淨的新掃描檔，同樣沒有額外調色。
+
+**3. 除錯過程中發現的坑：dev server 快取假象**。這一輪修圖時反覆遇到「明明檔案已經改了，瀏覽器還是看到舊版本」的狀況，追查後發現根本原因是：用 `lsof -i :PORT -t | xargs kill` 殺行程時，如果沒有真的找到 PID（例如指令语法/權限問題），舊的 `next dev` 行程會繼續在背景跑，新開的 server 因為 port 被佔用會直接啟動失敗，但不容易第一時間發現，導致舊行程一直用 Next.js 圖片最佳化的舊快取回應請求。**正確做法**：改圖片後，一定要用 `ss -tlnp | grep ":PORT"` 抓出「實際在監聽該 port 的 PID」直接 `kill -9`，確認 port 真的空出來後才重開，並清掉 `.next/cache/images`；懷疑還是快取問題時，直接 `curl` server 本身確認吐出的內容，比反覆猜測瀏覽器快取更快釐清問題出在哪一端。
+
+**4. 媒材作品集依方向自動分排**：`PaintingMediums.tsx` 現在會把每個媒材底下的作品依 `width > height` 自動分成「橫向」「直向」兩組，橫向的排在同一排最前面，不用手動調整資料順序。近正方形、自動判斷容易誤判的作品（例如「明暗之間」1526×1600）可以在 `paintings.ts` 該筆資料加 `layoutGroup: "landscape"` 手動覆寫。
+
+**5. 織品手作實際內容**：`src/data/media.ts` 新增 `TextileWork` 型別（`file`/`titleZh`/`description`/`width`/`height`/`wide?`），`textileWorks` 陣列 7 筆，`TextilePanel.tsx` 改成 `/projects` 基準樣式的編號清單（01-07，`border-t border-dashed` 分隔線），2-3 欄依裝置寬度排列；`wide: true` 的作品（目前是小精靈毯子，1600×635 全景照）會自動獨佔一整行，不會被擠進窄欄導致圖案太小。因為這是本輪唯一用到 `MediaList`/`MediaItem` 的地方，改版後兩者都已刪除。
+
+**6. 其他小修正**：`next.config.ts` 加了 `images.qualities: [75, 90]`（Next.js 15+ 預設只允許 quality 75，`ArtworkImage` 現在統一用 90 讓縮圖畫質更好）；修正 `paintings.ts` 兩筆媒材標註（色彩之手：複合媒材→水墨加水彩；疫線紅繩：複合媒材→水墨筆畫）。
 
 ### 第六輪：`/interests` 繪畫區塊實際內容
 
@@ -111,11 +130,12 @@ public/images/interests/painting/
 - Attendance System 的 live 預覽不穩定（見上表），目前用純文字卡片 + 正常可用的 demo 連結。如果之後 Sydney 修好那個站台自己的第三方 iframe 相容性問題，可以把 `src/data/projects.ts` 裡 Attendance System 那筆加上 `livePreview: true` 改回大圖即時預覽卡片。
 - 自我介紹（`profile.bio`）已在 2026-08-22 更新為新版本（藝術背景 + 走向程式的心路歷程，共 7 段），標點符號統一為全形。之後如果還要再改，直接改 `src/data/profile.ts` 的 `bio` 陣列即可。
 - 目前沒有放 LinkedIn 或其他社群連結（尚未提供），之後有的話可以加進 `src/data/profile.ts` 的 `contact` 物件，並在 `About.tsx` / `Footer.tsx` 加上對應連結。
-- `/interests` 頁面的織品手作目前還沒有照片（繪畫已經在第六輪補上實際內容），`src/data/media.ts` 裡每個 `MediaItem` 已預留 `images?: string[]`，之後補照片把檔案放進 `public/images/interests/` 並在對應項目填上路徑陣列即可，不用改元件邏輯。
 - 繪畫的「其他」媒材分頁目前有 6 件作品；如果之後想幫「素描」補上作品，要在 `src/data/paintings.ts` 的 `paintingMediums` 陣列新增一個 `{ id: "sketch", labelZh: "素描", labelEn: "Sketch", folder: "sketch", works: [...] }` 物件，並把照片放進 `public/images/interests/painting/sketch/`，元件會自動抓到新分頁，不用改 `PaintingMediums.tsx`。
-- 色鉛筆練習（17 個食材子分頁）目前是固定清單；之後要新增/移除某個食材子分頁，改 `src/data/paintingPractice.ts` 對應項目，`files` 陣列要填實際存在於 `public/images/interests/painting/practice/<id>/` 的檔名，不要憑空編。
+- 色鉛筆練習（水果/蔬菜/其他三分類、21 個品項）目前是固定清單；之後要新增/移除品項或分類，改 `src/data/paintingPractice.ts` 對應項目，`files` 陣列要填實際存在於 `public/images/interests/painting/practice/<category-id>/<item-id>/` 的檔名，不要憑空編。**這批照片色調是 Sydney 明確決定不調整、直接用原圖的，之後除非 Sydney 再次要求，不要主動幫這批照片做白平衡/亮度校正**（見上方第七輪的說明）。
+- 織品手作（`src/data/media.ts` 的 `textileWorks`）目前 7 筆；之後要新增作品，加一筆 `TextileWork`（記得填實際 `width`/`height`），照片放進 `public/images/interests/textile/`；如果新作品是很寬的全景照，加 `wide: true` 讓它獨佔一整行，不然會被擠進窄欄。
 - 烘焙食譜清單預期維持 5-6 則、汰換不無限增加，之後要換掉某一則時直接改 `src/data/recipes.ts` 對應物件（換照片記得同時把新檔案放進 `public/images/interests/baking/`）。
 - Attendance System、Mos Sales App 標示為「2026/7 ~ 2026/8」（已結束），之後有重大進展或想拿掉時間標示時，記得更新 `statusLabel` 或直接移除該欄位。
+- 2026-08-28 Sydney 回報 Artstore 嵌入卡片「好像有點問題」（截圖顯示 iframe 區塊是瀏覽器的載入失敗圖示），追查到一半後 Sydney 表示問題已解決，沒有進一步確認根本原因（很可能只是在 localhost 上看到的預期行為——Artstore 的 CSP 白名單只放行正式網址，見上方 iframe 測試結果表格）。**如果之後又回報同樣的畫面，先確認是不是在 localhost 而非正式網址上測試的**，避免重複排查已知的預期行為。
 
 ## 程式架構
 
@@ -135,11 +155,12 @@ src/
     PagePreviews.tsx                    # 首頁最下方三頁預告（作品集/更多經歷/興趣），套用 /projects 基準樣式
     InterestsExplorer.tsx               # "use client"，/interests 頁的 4 分類切換 tab + 內容面板容器
     PaintingPanel.tsx                     # 繪畫內容面板：組合 PaintingSeries + PaintingMediums + PaintingPractice 三層
-    PaintingSeries.tsx                     # 繪畫「系列作品」：廿四節氣 6 張，靜態全部顯示，讀 data/paintings.ts 的 solarTermsSeries
-    PaintingMediums.tsx                     # 繪畫「媒材作品集」："use client"，水彩/油畫/色鉛筆/其他分頁切換，讀 data/paintings.ts 的 paintingMediums
-    PaintingPractice.tsx                     # 繪畫「色鉛筆練習」："use client"，17 個食材子分頁切換，讀 data/paintingPractice.ts
-    TextilePanel.tsx                          # 織品手作內容面板，MediaList 包一層文字說明（目前仍是純文字佔位）
-    MediaList.tsx                              # 織品手作用的純文字清單元件，讀 data/media.ts，images? 預留擴充
+    PaintingSeries.tsx                     # 繪畫「系列作品」：廿四節氣 6 張，可收合（CollapsibleSection），讀 data/paintings.ts 的 solarTermsSeries
+    PaintingMediums.tsx                     # 繪畫「媒材作品集」："use client"，可收合，水彩/油畫/色鉛筆/其他分頁切換，每個分頁依作品橫向/直向自動分排，讀 data/paintings.ts 的 paintingMediums
+    PaintingPractice.tsx                     # 繪畫「色鉛筆練習」："use client"，可收合，水果/蔬菜/其他分類頁籤 → 品項分組顯示照片，單張照片的品項自動合併同一排，讀 data/paintingPractice.ts
+    CollapsibleSection.tsx                     # 共用的可收合區塊外殼（標題列 + 收合/展開按鈕），套用在繪畫的三大區塊
+    ArtworkImage.tsx                             # 共用的作品圖片元件：點擊放大燈箱（React Portal）+ 防右鍵/拖曳存檔，套用在繪畫與織品手作的所有照片
+    TextilePanel.tsx                          # 織品手作內容面板：開場白 + 7 件作品清單（/projects 基準樣式，編號+標題+小介紹+照片），讀 data/media.ts 的 textileWorks
     MusicPanel.tsx                          # 音樂內容面板，純文字，無資料檔
     BakingPanel.tsx                          # "use client"，烘焙縮圖清單 + 點擊展開食譜文字，讀 data/recipes.ts
     ProjectCard.tsx                           # 作品集卡片，依 project.livePreview 切換「大圖 live iframe 預覽卡片」/「純文字條列」兩種樣式
@@ -148,9 +169,9 @@ src/
     Footer.tsx                                   # 版權資訊 + Email/GitHub 連結
   data/
     profile.ts                                   # 個人資料：姓名、系級、求職狀態（badge/detail）、自我介紹、技能、聯絡方式
-    media.ts                                       # /interests 頁的織品手作資料（型別 MediaItem：name/images?）+ 音樂文字常數 + 織品手作開場白
-    paintings.ts                                    # 繪畫「系列作品」（solarTermsSeries）與「媒材作品集」（paintingMediums，型別 PaintingMedium：id/labelZh/labelEn/folder/works，works 是 Painting[]：file/titleZh/titleEn/width/height/mediaNote?）
-    paintingPractice.ts                              # 繪畫「色鉛筆練習」17 個食材子分頁（型別 PracticeSet：id/labelZh/labelEn/files，files 是 PracticeFile[]：file/width/height）
+    media.ts                                       # /interests 頁的織品手作資料（型別 TextileWork：file/titleZh/description/width/height/wide?）+ 音樂文字常數 + 織品手作開場白
+    paintings.ts                                    # 繪畫「系列作品」（solarTermsSeries）與「媒材作品集」（paintingMediums，型別 PaintingMedium：id/labelZh/labelEn/folder/works，works 是 Painting[]：file/titleZh/titleEn/width/height/mediaNote?/layoutGroup?）
+    paintingPractice.ts                              # 繪畫「色鉛筆練習」水果/蔬菜/其他三分類（型別 PracticeCategory：id/labelZh/labelEn/items，items 是 PracticeItem[]：id/labelZh/labelEn/files，files 是 PracticeFile[]：file/width/height）
     recipes.ts                                      # 烘焙食譜清單（型別 Recipe：name/image/description/meta）
     projects.ts                                      # 主要專案清單（型別 Project：name/description/tech/github/demo?/livePreview?/statusLabel?）
     experiences.ts                                    # 更多經歷清單（型別 Experience：title/description/tags/links[]/embeds?）
@@ -164,9 +185,9 @@ src/
 
 - 修改自我介紹、求職狀態、技能標籤、聯絡方式 → 改 `src/data/profile.ts`
 - 修改首頁最下方三頁預告文字 → 改 `src/components/PagePreviews.tsx` 裡的 `previews` 陣列
-- 修改 `/interests` 頁的織品手作項目或音樂文字 → 改 `src/data/media.ts`；補照片時把檔案放進 `public/images/interests/` 並在對應 `MediaItem` 的 `images` 陣列加上路徑
-- 新增／移除／修改繪畫「系列作品」或「媒材作品集」→ 改 `src/data/paintings.ts`；照片放進 `public/images/interests/painting/series/` 或 `public/images/interests/painting/<medium-folder>/`，建議先用 `sharp` 之類的工具壓縮（resize 到最長邊 1600px、JPEG quality 80 左右），原始照片常常單張 2-4MB。**每筆一定要填實際的 `width`/`height`**（例如 `sharp(file).metadata()` 讀出來的值），不要憑感覺填或沿用別張的數字，不然畫廊網格會裁到或壓扁作品
-- 新增／移除／修改繪畫「色鉛筆練習」子分頁 → 改 `src/data/paintingPractice.ts`，照片放進 `public/images/interests/painting/practice/<id>/`，`files` 陣列（`PracticeFile[]`：`file`/`width`/`height`）要跟資料夾裡實際存在的檔名完全一致（不要用猜的），`width`/`height` 也要是實際讀出來的尺寸；新增子分頁前先用 `ls` 之類的指令列出實際檔名清單、用 `sharp` 讀出每張的實際尺寸，再寫進資料檔
+- 修改 `/interests` 頁的織品手作作品或音樂文字 → 改 `src/data/media.ts` 的 `textileWorks`（`TextileWork`：`file`/`titleZh`/`description`/`width`/`height`/`wide?`）；補照片放進 `public/images/interests/textile/`，很寬的全景照記得加 `wide: true`
+- 新增／移除／修改繪畫「系列作品」或「媒材作品集」→ 改 `src/data/paintings.ts`；照片放進 `public/images/interests/painting/series/` 或 `public/images/interests/painting/<medium-folder>/`，建議先用 `sharp` 之類的工具壓縮（resize 到最長邊 1600px、JPEG quality 80 左右），原始照片常常單張 2-4MB。**每筆一定要填實際的 `width`/`height`**（例如 `sharp(file).metadata()` 讀出來的值），不要憑感覺填或沿用別張的數字，不然畫廊網格會裁到或壓扁作品；`PaintingMediums.tsx` 會依 `width > height` 自動把作品分成橫向/直向兩排，近正方形容易誤判的作品可以加 `layoutGroup: "landscape" | "portrait"` 手動覆寫
+- 新增／移除／修改繪畫「色鉛筆練習」品項 → 改 `src/data/paintingPractice.ts`（`PracticeCategory` → `PracticeItem` → `PracticeFile`），照片放進 `public/images/interests/painting/practice/<category-id>/<item-id>/`，`files` 陣列要跟資料夾裡實際存在的檔名完全一致（不要用猜的），`width`/`height` 也要是實際讀出來的尺寸；新增品項前先用 `ls` 之類的指令列出實際檔名清單、用 `sharp` 讀出每張的實際尺寸，再寫進資料檔。**這批照片色調是 Sydney 明確要求不調整、直接用原圖的，不要主動幫它們做白平衡/亮度校正**（見上方第七輪說明）
 - 新增／移除／修改烘焙食譜 → 改 `src/data/recipes.ts`，照片放進 `public/images/interests/baking/`（建議先壓縮過再放，原始手機照片單張常常 2-4MB）
 - 新增／移除／修改主要作品集卡片 → 改 `src/data/projects.ts`（`livePreview: true` 會變成大圖即時預覽卡片並佔兩欄，記得先照本文件「iframe 嵌入測試結果」的方法實測過該 demo 能不能穩定嵌入再設定；沒有 `livePreview` 就是純文字條列卡片；沒有 demo 連結時不要填 `demo` 欄位）
 - 新增／移除／修改更多經歷卡片 → 改 `src/data/experiences.ts`（`links` 陣列可以放 1 個到多個連結；`embeds` 陣列可以放 p5.js 或 YouTube 嵌入，型別是 `{ kind: "p5"; url; nativeWidth; nativeHeight; displayWidth? }` 或 `{ kind: "youtube"; videoId }`。p5.js 的 `nativeWidth`/`nativeHeight` 要填該 sketch `createCanvas()` 的實際尺寸，不然畫面會被裁切，見上方 iframe 測試結果表格的說明；不確定能不能嵌入的來源建議先用本文件「iframe 嵌入測試結果」的方法實測再加）
@@ -180,7 +201,7 @@ src/
 ## 之後的維護方式
 
 1. 改內容 → 改 `src/data/*.ts`（或元件樣式）
-2. 本地確認：`npm run lint && npm run build`（有需要的話 `npm run dev` 肉眼檢查，並確認手機/平板/桌機三種寬度 RWD 正常、四個頁面切換 URL 有正確改變）
+2. 本地確認：`npm run lint && npm run build`（有需要的話 `npm run dev` 肉眼檢查，並確認手機/平板/桌機三種寬度 RWD 正常、四個頁面切換 URL 有正確改變）。**改圖片檔案後如果懷疑瀏覽器看到的還是舊版本：先用 `ss -tlnp | grep ":PORT"` 找出真正在監聽的 PID 並 `kill -9`（不要只信任 `lsof | xargs kill` 沒噴錯就代表殺成功），清掉 `.next/cache/images` 再重開，並用 `curl` 直接檢查 server 吐出的內容，比反覆猜測快取更快**（詳見第七輪的除錯記錄）
 3. 如果新增/修改 iframe 嵌入來源，先實際在瀏覽器測試能不能顯示（很多網站會用 `X-Frame-Options` 或 CSP 擋 iframe），不要留空白或報錯的 iframe，測不出來就用連結按鈕代替
 4. `git add` → `git commit` → `git push`（推送前跟 Sydney 確認一次）
 5. Vercel 已連結此 GitHub repo，push 到 main 分支後會自動觸發重新部署，不需要手動操作

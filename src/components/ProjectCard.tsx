@@ -15,12 +15,19 @@ export default function ProjectCard({
   if (featured) {
     return (
       <article className="flex flex-col overflow-hidden rounded-2xl border border-border bg-background md:col-span-2 md:flex-row">
-        <div className="relative aspect-[16/10] w-full shrink-0 md:aspect-auto md:w-1/2">
+        <a
+          href={project.demo}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`前往 ${project.name}`}
+          className="relative aspect-[16/10] w-full shrink-0 md:aspect-auto md:w-1/2"
+        >
           <div className="absolute inset-3 overflow-hidden rounded-xl border border-accent/20 shadow-[0_1px_2px_rgba(28,26,23,0.06),0_8px_20px_-8px_rgba(28,26,23,0.15)]">
             {/* Live, always-up-to-date preview of the deployed demo, shrunk down
                 (250% size scaled to 40%) so more of the page is visible than a
-                1:1 iframe would show. Non-interactive — the "Demo" link below
-                is the real way to visit it. */}
+                1:1 iframe would show. The iframe itself stays non-interactive
+                (pointer-events-none) so clicks fall through to the surrounding
+                <a>, which opens the real site — same destination as "Demo" below. */}
             <div className="pointer-events-none absolute left-0 top-0 h-[250%] w-[250%] origin-top-left scale-[0.4]">
               <iframe
                 src={project.demo}
@@ -31,7 +38,7 @@ export default function ProjectCard({
               />
             </div>
           </div>
-        </div>
+        </a>
 
         <div className="flex flex-1 flex-col p-6 md:w-1/2">
           <div className="flex items-start justify-between gap-3">
